@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: dbPesca
+    environment:
+      POSTGRES_USER: postgre      
+      POSTGRES_PASSWORD: postgre123 
+      POSTGRES_DB: pesca
+    ports:
+      - "5432:5432"  
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
