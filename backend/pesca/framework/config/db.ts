@@ -4,7 +4,7 @@ class Config{
         HOST: 'localhost',
         PORT: 5432,
         USER: 'postgre',
-        PASSWORD:'postgrepass',
+        PASSWORD:'postgre123',
         DB: 'pesca',   
         dialect : 'postgres' as Dialect,
     }

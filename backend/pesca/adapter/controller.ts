@@ -5,22 +5,22 @@ import { FlotaRepositoryPostgre } from '../framework/repositories/FlotaRepositor
 
 export class FlotaController {
     private flotaservice: FlotaService;
-    private flotaRepository : FlotaRepositoryInterface;
+    private flotaRepository: FlotaRepositoryInterface;
     constructor() {
-        this.flotaRepository  = new FlotaRepositoryPostgre();
+        this.flotaRepository = new FlotaRepositoryPostgre();
         this.flotaservice = new FlotaService(this.flotaRepository);
     }
-    crearFlota(req: Request, res: Response) {
-        res.json({message: 'Flota creada'});
+    crearFlota = async (req: Request, res: Response) => {
+        res.json({ message: 'Crear flota' });
     }
-    obtenerFlota(req: Request, res: Response) {
-        res.json({message: 'Obtener flota'});
+    obtenerFlota = (req: Request, res: Response) => {
+        const flotas = this.flotaservice.getFlotas();
+        res.json(flotas);
     }
-    editarFlota(req: Request, res: Response) {
-        res.json({message: 'Editar flota'});
+    editarFlota = (req: Request, res: Response) => {
+        res.json({ message: 'Editar flota' });
     }
-    eliminarFlota(req: Request, res: Response) {
-        res.json({message: 'Eliminar flota'});
+    eliminarFlota = (req: Request, res: Response) => {
+        res.json({ message: 'Eliminar flota' });
     }
-
 }
