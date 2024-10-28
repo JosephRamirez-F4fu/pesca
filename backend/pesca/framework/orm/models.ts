@@ -29,4 +29,6 @@ FlotaModel.init({
 });
 
 
+db.sync().then(() => console.log("Flota table created"));
+
 export default FlotaModel;
