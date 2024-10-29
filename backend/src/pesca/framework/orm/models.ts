@@ -172,4 +172,4 @@ GastosViajeModel.belongsTo(ViajeModel, {
   as: "viaje",
 });
 
-db.sync({ force: true }).then(() => console.log("Database synchronized"));
+//db.sync({ force: true }).then(() => console.log("Database synchronized"));

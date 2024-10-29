@@ -4,3 +4,9 @@ export interface GastosViaje {
   concepto: string;
   importe: number;
 }
+
+export interface GastosViajeDTO {
+  id_viaje: number;
+  concepto: string;
+  importe: number;
+}

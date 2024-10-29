@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { FlotaService } from "../uses-cases";
-import { IFlotaRepository } from "../domain";
+import { AppError } from "@/shared/errors/AppError";
+import { IFlotaRepository } from "@/pesca/domain";
 import { FlotaRepositoryPostgre } from "../framework/repositories/FlotaRepositoryPostgre";
 
 export class FlotaController {
@@ -10,17 +11,113 @@ export class FlotaController {
     this.flotaRepository = new FlotaRepositoryPostgre();
     this.flotaservice = new FlotaService(this.flotaRepository);
   }
-  crearFlota = async (req: Request, res: Response) => {
-    res.json({ message: "Crear flota" });
+
+  crearFlota = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { nombre, titular } = req.body;
+      const flota = await this.flotaservice.createFlota({ nombre, titular });
+      res.json(flota);
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
   };
-  obtenerFlota = (req: Request, res: Response) => {
-    const flotas = this.flotaservice.getFlotas();
+
+  obtenerFlota = async (req: Request, res: Response): Promise<void> => {
+    const flotas = await this.flotaservice.getFlotas();
     res.json(flotas);
   };
-  editarFlota = (req: Request, res: Response) => {
-    res.json({ message: "Editar flota" });
+  editarFlota = async (req: Request, res: Response) => {
+    let flotaId = 0;
+    try {
+      const { id } = req.params;
+      flotaId = parseInt(id);
+    } catch (error) {
+      res.status(400).json({ message: "ID de flota inválido" });
+    }
+
+    try {
+      const { nombre, titular } = req.body;
+      await this.flotaservice.updateFlota(flotaId, { nombre, titular });
+      res.json({ message: "Flota actualizada" });
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
   };
-  eliminarFlota = (req: Request, res: Response) => {
-    res.json({ message: "Eliminar flota" });
+  eliminarFlota = async (req: Request, res: Response) => {
+    let flotaId = 0;
+    try {
+      const { id } = req.params;
+      flotaId = parseInt(id);
+    } catch (error) {
+      res.status(400).json({ message: "ID de flota inválido" });
+    }
+
+    try {
+      await this.flotaservice.deleteFlota(flotaId);
+      res.json({ message: "Flota eliminada" });
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
+  };
+
+  obtenerFlotaPorId = async (req: Request, res: Response) => {
+    let flotaId = 0;
+    try {
+      const { id } = req.params;
+      flotaId = parseInt(id);
+    } catch (error) {
+      res.status(400).json({ message: "ID de flota inválido" });
+    }
+
+    try {
+      const flota = await this.flotaservice.getFlotaById(flotaId);
+      res.json(flota);
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
+  };
+
+  obtenerFlotasPorTitular = async (req: Request, res: Response) => {
+    const { titular } = req.body;
+    try {
+      const flota = await this.flotaservice.getFlotasByTitular(titular);
+      res.json(flota);
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
+  };
+
+  obtenerFlotasPorNombre = async (req: Request, res: Response) => {
+    const { nombre } = req.body;
+    try {
+      const flota = await this.flotaservice.getFlotasByNombre(nombre);
+      res.json(flota);
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
   };
 }

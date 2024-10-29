@@ -1,4 +1,4 @@
-import { Flota } from "../model";
+import { Flota, FlotaDTO } from "@/pesca/domain";
 
 export class IFlotaRepository {
   async getFlotas(): Promise<Flota[]> {
@@ -7,20 +7,25 @@ export class IFlotaRepository {
   async getFlotaById(id: number): Promise<Flota | null> {
     throw new Error("Method not implemented");
   }
-  async createFlota(flota: Flota): Promise<Flota> {
+  async createFlota(flota: FlotaDTO): Promise<Flota> {
     throw new Error("Method not implemented");
   }
-  async updateFlota(id: number, flota: Flota): Promise<Flota | null> {
+  async updateFlota(id: number, flota: FlotaDTO): Promise<Flota | null> {
     throw new Error("Method not implemented");
   }
   async deleteFlota(id: number): Promise<Flota | null> {
     throw new Error("Method not implemented");
   }
-
   async getFlotasByTitular(titular: string): Promise<Flota[]> {
     throw new Error("Method not implemented");
   }
-  async getFlotaByNombre(nombre: string): Promise<Flota | null> {
+  async getFlotasByNombre(nombre: string): Promise<Flota[] | null> {
+    throw new Error("Method not implemented");
+  }
+  async getFlotaByNombreAndTitular(
+    nombre: string,
+    titular: string
+  ): Promise<Flota | null> {
     throw new Error("Method not implemented");
   }
 }

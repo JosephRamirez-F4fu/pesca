@@ -1,4 +1,4 @@
-import { IFlotaRepository, Flota } from "@/pesca/domain";
+import { IFlotaRepository, Flota, FlotaDTO } from "@/pesca/domain";
 import { FlotaModel } from "@/pesca/framework/orm/models";
 export class FlotaRepositoryPostgre implements IFlotaRepository {
   async getFlotas(): Promise<Flota[]> {
@@ -22,11 +22,12 @@ export class FlotaRepositoryPostgre implements IFlotaRepository {
       titular: flota.titular,
     };
   }
-  async createFlota(flota: Flota): Promise<Flota> {
+  async createFlota(flota: FlotaDTO): Promise<Flota> {
     const newFlota = await FlotaModel.create({
       nombre: flota.nombre,
       titular: flota.titular,
     });
+    console.log(newFlota);
     return {
       id: newFlota.id,
       nombre: newFlota.nombre,
@@ -70,8 +71,25 @@ export class FlotaRepositoryPostgre implements IFlotaRepository {
     });
   }
 
-  async getFlotaByNombre(nombre: string): Promise<Flota | null> {
-    const flota = await FlotaModel.findOne({ where: { nombre } });
+  async getFlotasByNombre(nombre: string): Promise<Flota[] | null> {
+    const flotas = await FlotaModel.findAll({ where: { nombre } });
+    if (!flotas) {
+      return null;
+    }
+    return flotas.map((flota) => {
+      return {
+        id: flota.id,
+        nombre: flota.nombre,
+        titular: flota.titular,
+      };
+    });
+  }
+
+  async getFlotaByNombreAndTitular(
+    nombre: string,
+    titular: string
+  ): Promise<Flota | null> {
+    const flota = await FlotaModel.findOne({ where: { nombre, titular } });
     if (!flota) {
       return null;
     }
