@@ -1,4 +1,4 @@
-import { GastosViaje, IGastosViajeRepository } from "@/pesca/domain";
+import { GastosViaje, GastosViajeDTO, IGastosViajeRepository } from "@/pesca/domain";
 
 export class GastosViajeService {
   private readonly repository: IGastosViajeRepository;
@@ -15,7 +15,7 @@ export class GastosViajeService {
     return this.repository.getGastosViajeById(id);
   }
 
-  async createGastoViaje(gastoViaje: GastosViaje) {
+  async createGastoViaje(gastoViaje: GastosViajeDTO) {
     return this.repository.createGastosViaje(gastoViaje);
   }
 

@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import {MainRouter} from "@/pesca/framework/routes"
 
 
 export class Server {
@@ -7,9 +8,9 @@ export class Server {
     private port: number;
     private router = Router();
 
-    constructor(port: number, router: Router) {
+    constructor(port: number) {
         this.port  = port;
-        this.router = router;
+        this.router = MainRouter.getRouter();
 
     }
 

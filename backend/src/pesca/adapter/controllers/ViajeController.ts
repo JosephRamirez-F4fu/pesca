@@ -1,33 +1,31 @@
-import { Viaje } from "@/pesca/domain";
+import { Viaje, ViajeDTO, IViajeRepository } from "@/pesca/domain";
+import { Request,Response } from "express";
 import { ViajeService } from "@/pesca/uses-cases";
+import { ViajeRepositoryPostgre } from "@/pesca/framework/repositories";
 export class ViajeController {
   private viajeService: ViajeService;
+  private viajeRepository: IViajeRepository;
 
-  constructor(viajeService: ViajeService) {
-    this.viajeService = viajeService;
+  constructor() {
+    this.viajeRepository = new ViajeRepositoryPostgre();
+    this.viajeService = new ViajeService(this.viajeRepository);
   }
 
-  async createViaje(viaje: Viaje) {
-    return this.viajeService.createViaje(viaje);
+  async createViaje(req: Request, res: Response) {
   }
 
-  async getViajes() {
-    return this.viajeService.getViajes();
+  async getViajes(req: Request, res: Response) {
   }
 
-  async getViajeById(id: number) {
-    return this.viajeService.getViajeById(id);
+  async getViajeById(req: Request, res: Response) {
   }
 
-  async updateViaje(id: number, viaje: Viaje) {
-    return this.viajeService.updateViaje(id, viaje);
+  async updateViaje(req: Request, res: Response) {
   }
 
-  async deleteViaje(id: number) {
-    return this.viajeService.deleteViaje(id);
+  async deleteViaje(req: Request, res: Response) {
   }
 
-  async getViajesByFlotaId(id: number) {
-    return this.viajeService.getViajesByFlotaId(id);
+  async getViajesByFlotaId(req: Request, res: Response) {
   }
 }

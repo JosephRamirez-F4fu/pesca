@@ -52,6 +52,7 @@ export class FlotaService {
       throw new AppError("Nombre o titular de flota requerido", 400);
     }
     this.repository.updateFlota(id, flota);
+
   }
 
   async deleteFlota(id: number) {

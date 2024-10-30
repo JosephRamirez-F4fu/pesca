@@ -1,5 +1,5 @@
-import { IGastosViajeRepository, GastosViaje } from "@/pesca/domain";
-import { GastosViajeModel } from "@/pesca/framework/orm/models";
+import { IGastosViajeRepository, GastosViaje, GastosViajeDTO } from "@/pesca/domain";
+import { GastosViajeModel,ViajeModel } from "@/pesca/framework/orm/models";
 
 export class GastoViajeRepositoryPostgre extends IGastosViajeRepository {
   async getGastosViaje(): Promise<GastosViaje[]> {
@@ -14,7 +14,7 @@ export class GastoViajeRepositoryPostgre extends IGastosViajeRepository {
     });
   }
 
-  async getGastoViajeById(id: number): Promise<GastosViaje | null> {
+  async getGastosViajeById(id: number): Promise<GastosViaje | null> {
     const gastoViaje = await GastosViajeModel.findByPk(id);
     if (!gastoViaje) {
       return null;
@@ -27,7 +27,7 @@ export class GastoViajeRepositoryPostgre extends IGastosViajeRepository {
     };
   }
 
-  async createGastoViaje(gastoViaje: GastosViaje): Promise<GastosViaje> {
+  async createGastosViaje(gastoViaje: GastosViajeDTO): Promise<GastosViaje> {
     const newGastoViaje = await GastosViajeModel.create({
       concepto: gastoViaje.concepto,
       importe: gastoViaje.importe,
@@ -41,7 +41,7 @@ export class GastoViajeRepositoryPostgre extends IGastosViajeRepository {
     };
   }
 
-  async updateGastoViaje(
+  async updateGastosViaje(
     id: number,
     gastoViaje: GastosViaje
   ): Promise<GastosViaje | null> {
@@ -61,4 +61,64 @@ export class GastoViajeRepositoryPostgre extends IGastosViajeRepository {
       id_viaje: gastoViajeToUpdate.id_viaje,
     };
   }
+
+  async deleteGastosViaje(id: number): Promise<GastosViaje|null> {
+    const gastoViajeToDelete = await GastosViajeModel.findByPk(id);
+    if (!gastoViajeToDelete) {
+      return null;
+    }
+    await gastoViajeToDelete.destroy();
+    return {
+      id: gastoViajeToDelete.id,
+      concepto: gastoViajeToDelete.concepto,
+      importe: gastoViajeToDelete.importe,
+      id_viaje: gastoViajeToDelete.id_viaje,
+    };
+  }
+
+  async getGastosViajeByConcepto(concepto: string): Promise<GastosViaje[]> {
+    const gastosViaje = await GastosViajeModel.findAll({ where: { concepto } });
+    return gastosViaje.map((gastoViaje) => {
+      return {
+        id: gastoViaje.id,
+        concepto: gastoViaje.concepto,
+        importe: gastoViaje.importe,
+        id_viaje: gastoViaje.id_viaje,
+      };
+    });
+  }
+
+  async getGastosViajeByFlotaId(flotaId: number): Promise<GastosViaje[]> {
+    const gastosViaje = await GastosViajeModel.findAll(
+      {
+        include: [
+          {
+            model: ViajeModel,
+            where: { id_flota: flotaId },
+          },
+        ],
+      }
+    );
+    return gastosViaje.map((gastoViaje) => {
+      return {
+        id: gastoViaje.id,
+        concepto: gastoViaje.concepto,
+        importe: gastoViaje.importe,
+        id_viaje: gastoViaje.id_viaje,
+      };
+    });
+  }
+
+  async getGastosViajeByViajeId(id: number): Promise<GastosViaje[]> {
+    const gastosViaje = await GastosViajeModel.findAll({ where: { id_viaje: id } });
+    return gastosViaje.map((gastoViaje) => {
+      return {
+        id: gastoViaje.id,
+        concepto: gastoViaje.concepto,
+        importe: gastoViaje.importe,
+        id_viaje: gastoViaje.id_viaje,
+      };
+    });
+  }
+
 }

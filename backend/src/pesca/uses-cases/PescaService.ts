@@ -1,4 +1,4 @@
-import { Pesca, IPescaRepository } from "@/pesca/domain";
+import { Pesca, IPescaRepository,PescaDTO } from "@/pesca/domain";
 
 export class PescaService {
   private readonly repository: IPescaRepository;
@@ -15,11 +15,11 @@ export class PescaService {
     return this.repository.getPescaById(id);
   }
 
-  async createPesca(pesca: Pesca) {
+  async createPesca(pesca: PescaDTO) {
     return this.repository.createPesca(pesca);
   }
 
-  async updatePesca(id: number, pesca: Pesca) {
+  async updatePesca(id: number, pesca: PescaDTO) {
     this.repository.updatePesca(id, pesca);
   }
 

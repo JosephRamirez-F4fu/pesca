@@ -1,6 +1,8 @@
 import { GastosViaje, IGastosViajeRepository } from "@/pesca/domain";
 import { GastosViajeService } from "@/pesca/uses-cases";
 import { GastoViajeRepositoryPostgre } from "@/pesca/framework/repositories";
+import { Request, Response } from "express";
+import { AppError } from "@/shared/errors/AppError";
 export class GastosViajeController {
   private gastosViajeService: GastosViajeService;
   private GastosViajeRepository: IGastosViajeRepository;
@@ -10,36 +12,152 @@ export class GastosViajeController {
       this.GastosViajeRepository
     );
   }
+  createGastosViaje = async (req: Request, res: Response) => {
+    try {
+      const {
+        id_viaje,
+        concepto,
+        importe,
+      } = req.body;
 
-  async createGastosViaje(gastosViaje: GastosViaje) {
-    return this.gastosViajeService.createGastoViaje(gastosViaje);
-  }
+      const gastosViaje = await this.gastosViajeService.createGastoViaje({
+        id_viaje,
+        concepto,
+        importe,
+      });
+      res.json(gastosViaje);
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    } 
+  };
 
-  async getGastosViaje() {
-    return this.gastosViajeService.getGastosViaje();
-  }
+  getGastosViaje = async (req: Request, res: Response) => {
+    try {
+      const gastosViaje = await this.gastosViajeService.getGastosViaje();
+      res.json(gastosViaje);
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
+  };
 
-  async getGastosViajeById(id: number) {
-    return this.gastosViajeService.getGastoViajeById(id);
-  }
+  getGastosViajeById = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const gastosViaje = await this.gastosViajeService.getGastoViajeById(
+        parseInt(id)
+      );
+      if (!gastosViaje) {
+        res.status(404).json({ message: "Gastos de viaje no encontrado" });
+      } else {
+        res.json(gastosViaje);
+      }
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
+  };
 
-  async updateGastosViaje(id: number, gastosViaje: GastosViaje) {
-    return this.gastosViajeService.updateGastoViaje(id, gastosViaje);
-  }
+  updateGastosViaje = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const {
+        id_viaje,
+        concepto,
+        importe,
+      } = req.body;
+      await this.gastosViajeService.updateGastoViaje(
+        parseInt(id),
+        {
+          id: parseInt(id),
+          id_viaje,
+          concepto,
+          importe,
+        }
+      );
+      res.json({ message: "Gastos de viaje actualizado" });
+      }
+    catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
+  };
 
-  async deleteGastosViaje(id: number) {
-    return this.gastosViajeService.deleteGastoViaje(id);
-  }
+  deleteGastosViaje = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      await this.gastosViajeService.deleteGastoViaje(parseInt(id));
+      res.json({ message: "Gastos de viaje eliminado" });
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
+  };
 
-  async getGastosViajeByViajeId(id: number) {
-    return this.gastosViajeService.getGastosViajeByViajeId(id);
-  }
+  getGastosViajeByViajeId = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const gastosViaje = await this.gastosViajeService.getGastosViajeByViajeId(
+        parseInt(id)
+      );
+      res.json(gastosViaje);
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
+  };
 
-  async getGastosViajeByConcepto(concepto: string) {
-    return this.gastosViajeService.getGastosViajeByConcepto(concepto);
-  }
+  getGastosViajeByConcepto = async (req: Request, res: Response) => {
+    try {
+      const { concepto } = req.params;
+      const gastosViaje = await this.gastosViajeService.getGastosViajeByConcepto(
+        concepto
+      );
+      res.json(gastosViaje);
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
+  };
 
-  async getGastosViajeByFlotaId(importe: number) {
-    return this.gastosViajeService.getGastosViajeByFlotaId(importe);
-  }
+  getGastosViajeByFlotaId = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const gastosViaje = await this.gastosViajeService.getGastosViajeByFlotaId(
+        parseInt(id)
+      );
+      res.json(gastosViaje);
+    } catch (error) {
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
+    }
+  };
+
+  
+
 }
