@@ -35,7 +35,7 @@ export class GastosViajeService {
     return this.repository.getGastosViajeByConcepto(concepto);
   }
 
-  async getGastosViajeByImporte(id: number) {
+  async getGastosViajeByFlotaId(id: number) {
     return this.repository.getGastosViajeByFlotaId(id);
   }
 }

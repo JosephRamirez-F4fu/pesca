@@ -1,4 +1,4 @@
-import { FlotaController } from "./../adapter";
+import { FlotaController } from "@/pesca/adapter/controllers";
 import { Router } from "express";
 
 export class FlotaRouter {
