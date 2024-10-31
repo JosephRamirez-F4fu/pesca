@@ -1,24 +1,30 @@
-import { GastosViaje, IGastosViajeRepository } from "@/pesca/domain";
+import { IGastosViajeRepository } from "@/pesca/domain";
 import { GastosViajeService } from "@/pesca/uses-cases";
-import { GastoViajeRepositoryPostgre } from "@/pesca/framework/repositories";
+import {
+  GastoViajeRepositoryPostgre,
+  FlotaRepositoryPostgre,
+  ViajeRepositoryPostgre,
+} from "@/pesca/framework/repositories";
 import { Request, Response } from "express";
 import { AppError } from "@/shared/errors/AppError";
 export class GastosViajeController {
   private gastosViajeService: GastosViajeService;
   private GastosViajeRepository: IGastosViajeRepository;
+  private viajeRepository: ViajeRepositoryPostgre;
+  private flotaRepository: FlotaRepositoryPostgre;
   constructor() {
     this.GastosViajeRepository = new GastoViajeRepositoryPostgre();
+    this.viajeRepository = new ViajeRepositoryPostgre();
+    this.flotaRepository = new FlotaRepositoryPostgre();
     this.gastosViajeService = new GastosViajeService(
-      this.GastosViajeRepository
+      this.GastosViajeRepository,
+      this.viajeRepository,
+      this.flotaRepository
     );
   }
   createGastosViaje = async (req: Request, res: Response) => {
     try {
-      const {
-        id_viaje,
-        concepto,
-        importe,
-      } = req.body;
+      const { id_viaje, concepto, importe } = req.body;
 
       const gastosViaje = await this.gastosViajeService.createGastoViaje({
         id_viaje,
@@ -32,7 +38,7 @@ export class GastosViajeController {
       } else {
         res.status(500).json({ message: "Error interno" });
       }
-    } 
+    }
   };
 
   getGastosViaje = async (req: Request, res: Response) => {
@@ -71,23 +77,15 @@ export class GastosViajeController {
   updateGastosViaje = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const {
+      const { id_viaje, concepto, importe } = req.body;
+      await this.gastosViajeService.updateGastoViaje(parseInt(id), {
+        id: parseInt(id),
         id_viaje,
         concepto,
         importe,
-      } = req.body;
-      await this.gastosViajeService.updateGastoViaje(
-        parseInt(id),
-        {
-          id: parseInt(id),
-          id_viaje,
-          concepto,
-          importe,
-        }
-      );
+      });
       res.json({ message: "Gastos de viaje actualizado" });
-      }
-    catch (error) {
+    } catch (error) {
       if (error instanceof AppError) {
         res.status(error.statusCode).json({ message: error.message });
       } else {
@@ -129,9 +127,8 @@ export class GastosViajeController {
   getGastosViajeByConcepto = async (req: Request, res: Response) => {
     try {
       const { concepto } = req.params;
-      const gastosViaje = await this.gastosViajeService.getGastosViajeByConcepto(
-        concepto
-      );
+      const gastosViaje =
+        await this.gastosViajeService.getGastosViajeByConcepto(concepto);
       res.json(gastosViaje);
     } catch (error) {
       if (error instanceof AppError) {
@@ -157,7 +154,4 @@ export class GastosViajeController {
       }
     }
   };
-
-  
-
 }

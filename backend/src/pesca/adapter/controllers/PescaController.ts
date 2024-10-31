@@ -1,33 +1,50 @@
-import { IPescaRepository, Pesca, PescaDTO } from "@/pesca/domain";
+import {
+  IPescaRepository,
+  IFlotaRepository,
+  IViajeRepository,
+} from "@/pesca/domain";
 import { PescaService } from "@/pesca/uses-cases";
-import { PescaRepositoryPostgre } from "@/pesca/framework/repositories";
+import {
+  PescaRepositoryPostgre,
+  FlotaRepositoryPostgre,
+  ViajeRepositoryPostgre,
+} from "@/pesca/framework/repositories";
 import { Request, Response } from "express";
 import { AppError } from "@/shared/errors/AppError";
 export class PescaControler {
   private pescaRepository: IPescaRepository;
+  private flotaRepository: IFlotaRepository;
+  private viajeRepository: IViajeRepository;
   private pescaService: PescaService;
 
   constructor() {
     this.pescaRepository = new PescaRepositoryPostgre();
-    this.pescaService = new PescaService(this.pescaRepository);
+    this.flotaRepository = new FlotaRepositoryPostgre();
+    this.viajeRepository = new ViajeRepositoryPostgre();
+
+    this.pescaService = new PescaService(
+      this.pescaRepository,
+      this.flotaRepository,
+      this.viajeRepository
+    );
   }
 
   async createPesca(req: Request, res: Response) {
     try {
-      const {
-        id_viaje,
-        pescado_tipo,
-        pescado_cajas,
-      } = req.body;
+      const { id_viaje, pescado_tipo, pescado_cajas } = req.body;
 
       const pesca = await this.pescaService.createPesca({
-        "id_viaje": id_viaje,
-        "pescado_tipo": pescado_tipo,
-        "pescado_cajas": pescado_cajas,
+        id_viaje: id_viaje,
+        pescado_tipo: pescado_tipo,
+        pescado_cajas: pescado_cajas,
       });
       res.json(pesca);
     } catch (error) {
-      res.status(500).json({ message: "Error interno" });
+      if (error instanceof AppError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Error interno" });
+      }
     }
   }
 
@@ -37,7 +54,7 @@ export class PescaControler {
   }
 
   async getPescaById(req: Request, res: Response) {
-   try {
+    try {
       const { id } = req.params;
       const pesca = await this.pescaService.getPescaById(parseInt(id));
       if (!pesca) {
@@ -45,7 +62,6 @@ export class PescaControler {
       } else {
         res.json(pesca);
       }
-
     } catch (error) {
       if (error instanceof AppError) {
         res.status(error.statusCode).json({ message: error.message });
@@ -58,16 +74,12 @@ export class PescaControler {
   async updatePesca(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const {
-        id_viaje,
-        pescado_tipo,
-        pescado_cajas,
-      } = req.body;
+      const { id_viaje, pescado_tipo, pescado_cajas } = req.body;
 
       const pesca = await this.pescaService.updatePesca(parseInt(id), {
-        "id_viaje": id_viaje,
-        "pescado_tipo": pescado_tipo,
-        "pescado_cajas": pescado_cajas,
+        id_viaje: id_viaje,
+        pescado_tipo: pescado_tipo,
+        pescado_cajas: pescado_cajas,
       });
       res.json(pesca);
     } catch (error) {
@@ -77,7 +89,6 @@ export class PescaControler {
         res.status(500).json({ message: "Error interno" });
       }
     }
-
   }
 
   async deletePesca(req: Request, res: Response) {
@@ -85,8 +96,7 @@ export class PescaControler {
       const { id } = req.params;
       await this.pescaService.deletePesca(parseInt(id));
       res.json({ message: "Pesca eliminada" });
-    }
-    catch (error) {
+    } catch (error) {
       if (error instanceof AppError) {
         res.status(error.statusCode).json({ message: error.message });
       } else {

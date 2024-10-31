@@ -1,4 +1,4 @@
-import { FlotaDTO, IFlotaRepository } from "@/pesca/domain";
+import { FlotaDTO, Flota, IFlotaRepository } from "@/pesca/domain";
 import { AppError } from "@/shared/errors/AppError";
 export class FlotaService {
   private readonly repository: IFlotaRepository;
@@ -11,8 +11,12 @@ export class FlotaService {
     return this.repository.getFlotas();
   }
 
-  async getFlotaById(id: number) {
-    return this.repository.getFlotaById(id);
+  async getFlotaById(id: number): Promise<Flota> {
+    const flota = await this.repository.getFlotaById(id);
+    if (!flota) {
+      throw new AppError("Flota no encontrada", 404);
+    }
+    return flota;
   }
 
   async createFlota(flota: FlotaDTO) {
@@ -52,7 +56,6 @@ export class FlotaService {
       throw new AppError("Nombre o titular de flota requerido", 400);
     }
     this.repository.updateFlota(id, flota);
-
   }
 
   async deleteFlota(id: number) {
