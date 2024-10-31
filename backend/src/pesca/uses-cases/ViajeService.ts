@@ -9,7 +9,6 @@ export class ViajeService {
     this.repository = repository;
     this.flotaRepository = flotaRepository;
   }
-  // TODO VIAJE SERVICE VALIDATIONS AND BUSINESS LOGIC
   async getViajes() {
     return await this.repository.getViajes();
   }
