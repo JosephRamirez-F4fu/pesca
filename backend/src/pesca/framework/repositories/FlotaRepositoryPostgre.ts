@@ -8,6 +8,7 @@ export class FlotaRepositoryPostgre implements IFlotaRepository {
         id: flota.id,
         nombre: flota.nombre,
         titular: flota.titular,
+        capacidad: flota.capacidad,
       };
     });
   }
@@ -20,18 +21,21 @@ export class FlotaRepositoryPostgre implements IFlotaRepository {
       id: flota.id,
       nombre: flota.nombre,
       titular: flota.titular,
+      capacidad: flota.capacidad,
     };
   }
   async createFlota(flota: FlotaDTO): Promise<Flota> {
     const newFlota = await FlotaModel.create({
       nombre: flota.nombre,
       titular: flota.titular,
+      capacidad: flota.capacidad,
     });
     console.log(newFlota);
     return {
       id: newFlota.id,
       nombre: newFlota.nombre,
       titular: newFlota.titular,
+      capacidad: newFlota.capacidad,
     };
   }
   async updateFlota(id: number, flota: Flota): Promise<Flota | null> {
@@ -46,6 +50,7 @@ export class FlotaRepositoryPostgre implements IFlotaRepository {
       id: flotaToUpdate.id,
       nombre: flotaToUpdate.nombre,
       titular: flotaToUpdate.titular,
+      capacidad: flotaToUpdate.capacidad,
     };
   }
   async deleteFlota(id: number): Promise<Flota | null> {
@@ -58,6 +63,7 @@ export class FlotaRepositoryPostgre implements IFlotaRepository {
       id: flotaToDelete.id,
       nombre: flotaToDelete.nombre,
       titular: flotaToDelete.titular,
+      capacidad: flotaToDelete.capacidad,
     };
   }
   async getFlotasByTitular(titular: string): Promise<Flota[]> {
@@ -67,6 +73,7 @@ export class FlotaRepositoryPostgre implements IFlotaRepository {
         id: flota.id,
         nombre: flota.nombre,
         titular: flota.titular,
+        capacidad: flota.capacidad,
       };
     });
   }
@@ -81,6 +88,7 @@ export class FlotaRepositoryPostgre implements IFlotaRepository {
         id: flota.id,
         nombre: flota.nombre,
         titular: flota.titular,
+        capacidad : flota.capacidad,
       };
     });
   }
@@ -97,6 +105,7 @@ export class FlotaRepositoryPostgre implements IFlotaRepository {
       id: flota.id,
       nombre: flota.nombre,
       titular: flota.titular,
+      capacidad: flota.capacidad,
     };
   }
 }

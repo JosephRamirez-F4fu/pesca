@@ -1,7 +1,7 @@
 import { FlotaRepository } from "./repositories/FlotaRepository"
 import { ObtenerFlotas } from "./../useCases/flota/obtenerFlotas"
 import { useEffect,useState } from "react";
-import { Flota } from "../domain/Flota";
+import { Flota } from "../domain/model";
 export function App() {
   const flotaRepository = new FlotaRepository();
   const obtenerFlotas = new ObtenerFlotas(flotaRepository);

@@ -5,6 +5,7 @@ export class FlotaModel extends Model {
   public id!: number;
   public nombre!: string;
   public titular!: string;
+  public capacidad!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -22,6 +23,10 @@ FlotaModel.init(
     },
     titular: {
       type: new DataTypes.STRING(128),
+      allowNull: false,
+    },
+    capacidad: {
+      type: new DataTypes.INTEGER(),
       allowNull: false,
     },
   },

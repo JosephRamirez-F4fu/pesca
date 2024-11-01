@@ -3,10 +3,12 @@ export interface Pesca {
   id_viaje: number;
   pescado_tipo: string;
   pescado_cajas: number;
+  precio : number;
 }
 
 export interface PescaDTO {
   id_viaje: number;
   pescado_tipo: string;
   pescado_cajas: number;
+  precio : number;
 }

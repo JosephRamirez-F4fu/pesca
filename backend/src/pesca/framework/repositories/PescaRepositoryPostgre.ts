@@ -10,6 +10,7 @@ export class PescaRepositoryPostgre implements IPescaRepository {
         id_viaje: pesca.id_viaje,
         pescado_tipo: pesca.pescado_tipo,
         pescado_cajas: pesca.pescado_cajas,
+        precio: pesca.pescado_precio,
       };
     });
   }
@@ -24,6 +25,7 @@ export class PescaRepositoryPostgre implements IPescaRepository {
       id_viaje: pescaCreated.id_viaje,
       pescado_tipo: pescaCreated.pescado_tipo,
       pescado_cajas: pescaCreated.pescado_cajas,
+      precio: pescaCreated.pescado_precio,
     };
   }
 
@@ -41,6 +43,7 @@ export class PescaRepositoryPostgre implements IPescaRepository {
       id_viaje: pescaToUpdate.id_viaje,
       pescado_tipo: pescaToUpdate.pescado_tipo,
       pescado_cajas: pescaToUpdate.pescado_cajas,
+      precio: pescaToUpdate.pescado_precio,
     };
   }
 
@@ -55,6 +58,7 @@ export class PescaRepositoryPostgre implements IPescaRepository {
       id_viaje: pescaToDelete.id_viaje,
       pescado_tipo: pescaToDelete.pescado_tipo,
       pescado_cajas: pescaToDelete.pescado_cajas,
+      precio: pescaToDelete.pescado_precio,
     };
   }
 
@@ -68,6 +72,7 @@ export class PescaRepositoryPostgre implements IPescaRepository {
       id_viaje: pesca.id_viaje,
       pescado_tipo: pesca.pescado_tipo,
       pescado_cajas: pesca.pescado_cajas,
+      precio: pesca.pescado_precio,
     };
   }
 
@@ -82,6 +87,7 @@ export class PescaRepositoryPostgre implements IPescaRepository {
         id_viaje: pesca.id_viaje,
         pescado_tipo: pesca.pescado_tipo,
         pescado_cajas: pesca.pescado_cajas,
+        precio: pesca.pescado_precio,
       };
     });
   }
@@ -104,6 +110,7 @@ export class PescaRepositoryPostgre implements IPescaRepository {
         id_viaje: pesca.id_viaje,
         pescado_tipo: pesca.pescado_tipo,
         pescado_cajas: pesca.pescado_cajas,
+        precio: pesca.pescado_precio,
       };
     });
   }

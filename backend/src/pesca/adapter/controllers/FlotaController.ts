@@ -14,8 +14,8 @@ export class FlotaController {
 
   crearFlota = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { nombre, titular } = req.body;
-      const flota = await this.flotaservice.createFlota({ nombre, titular });
+      const { nombre, titular,capacidad } = req.body;
+      const flota = await this.flotaservice.createFlota({ nombre, titular,capacidad });
       res.json(flota);
     } catch (error) {
       if (error instanceof AppError) {
@@ -40,8 +40,8 @@ export class FlotaController {
     }
 
     try {
-      const { nombre, titular } = req.body;
-      await this.flotaservice.updateFlota(flotaId, { nombre, titular });
+      const { nombre, titular,capacidad } = req.body;
+      await this.flotaservice.updateFlota(flotaId, { nombre, titular, capacidad });
       res.json({ message: "Flota actualizada" });
     } catch (error) {
       if (error instanceof AppError) {

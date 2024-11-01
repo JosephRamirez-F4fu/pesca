@@ -31,12 +31,13 @@ export class PescaControler {
 
   async createPesca(req: Request, res: Response) {
     try {
-      const { id_viaje, pescado_tipo, pescado_cajas } = req.body;
+      const { id_viaje, pescado_tipo, pescado_cajas,precio } = req.body;
 
       const pesca = await this.pescaService.createPesca({
         id_viaje: id_viaje,
         pescado_tipo: pescado_tipo,
         pescado_cajas: pescado_cajas,
+        precio:precio
       });
       res.json(pesca);
     } catch (error) {
@@ -74,12 +75,13 @@ export class PescaControler {
   async updatePesca(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { id_viaje, pescado_tipo, pescado_cajas } = req.body;
+      const { id_viaje, pescado_tipo, pescado_cajas,precio } = req.body;
 
       const pesca = await this.pescaService.updatePesca(parseInt(id), {
         id_viaje: id_viaje,
         pescado_tipo: pescado_tipo,
         pescado_cajas: pescado_cajas,
+        precio:precio
       });
       res.json(pesca);
     } catch (error) {

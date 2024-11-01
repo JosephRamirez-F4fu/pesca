@@ -43,6 +43,16 @@ export class PescaService {
     if (!pesca.pescado_cajas) {
       throw new AppError("Cajas de pescado requeridas", 400);
     }
+    if(!pesca.precio){
+      throw new AppError("Precio de pescado requerido", 400);
+    }
+    if (pesca.precio>0) {
+      throw new AppError("Precio de pescado debe ser mayor a 0", 400);
+    }
+
+    if (!(await this.viajeRepository.getViajeById(pesca.id_viaje))) {
+      throw new AppError("Viaje no encontrado", 404);
+    }
     const pescaCreated = await this.repository.createPesca(pesca);
     return pescaCreated;
   }
