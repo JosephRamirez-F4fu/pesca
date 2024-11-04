@@ -45,6 +45,7 @@ export class FlotaRepositoryPostgre implements IFlotaRepository {
     }
     flotaToUpdate.nombre = flota.nombre;
     flotaToUpdate.titular = flota.titular;
+    flotaToUpdate.capacidad = flota.capacidad;
     await flotaToUpdate.save();
     return {
       id: flotaToUpdate.id,

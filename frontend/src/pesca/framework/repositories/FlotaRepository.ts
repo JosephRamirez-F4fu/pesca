@@ -1,4 +1,4 @@
-import { Flota, FlotaDTO } from "../../domain/model";
+import { Flota, FlotaDTO } from "@/pesca/domain/model";
 
 export class FlotaRepository {
   async getAll(): Promise<Flota[]> {
@@ -8,19 +8,26 @@ export class FlotaRepository {
   }
   async getById(id: number): Promise<Flota> {
     const response = await fetch(`http://localhost:8080/flota/${id}`);
-    const flota = await response.json();
+    const flota: Flota = await response.json();
+    
     return flota;
   }
-  async save(flota: Flota): Promise<Flota> {
-    const response = await fetch("http://localhost:8080/flota", {
+  async save(flota: FlotaDTO): Promise<Flota> {
+    try {
+      const response = await fetch("http://localhost:8080/flota", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(flota),
     });
-    const flotaSaved = await response.json();
+    const flotaSaved:Flota = await response.json();
     return flotaSaved;
+  }
+    catch (error) {
+      console.log(error);
+      throw new Error("Error al guardar la flota");
+    }
   }
   async update (id: number, flota: FlotaDTO): Promise<void> {
     await fetch(`http://localhost:8080/flota/${id}`, {
