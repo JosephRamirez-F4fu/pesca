@@ -1,77 +1,102 @@
 import { useState } from 'react';
 import { ViajeSummary } from '@/pesca/domain/model';
-import { Table, Button, Alert } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper, Alert } from '@mui/material';
 
+// Simulación de datos de viajes
 const viajes: ViajeSummary[] = [
-    {
-        finalizado: false,
-        gasto_total: 100,
-        id: 1,
-        flota: 'Flota 1',
-        pesca_total: 100,
-    },
-]
-
-const onAddCombustible = (id: number) => {
-    console.log('Agregar Combustible', id);
-};
-
-const onAddGasto = (id: number) => {
-    console.log('Agregar Gasto', id);
-};
-
-const onAddPesca = (id: number) => {
-    console.log('Agregar Pesca', id);
-};
-
-const onFinalizar = (id: number) => {
-    console.log('Finalizar Viaje', id);
-};
-
-
+    { finalizado: false, gasto_total: 0, id: 1, flota: 'Flota 1', pesca_total: 0 },
+    { finalizado: true, gasto_total: 200, id: 2, flota: 'Flota 2', pesca_total: 200 },
+    { finalizado: false, gasto_total: 0, id: 3, flota: 'Flota 3', pesca_total: 0 },
+    { finalizado: true, gasto_total: 400, id: 4, flota: 'Flota 4', pesca_total: 400 },
+];
 
 export const ViajePage = () => {
+    const [viajeSeleccionado, setViajeSeleccionado] = useState<ViajeSummary | null>(null);
+
+    const handleRowClick = (viaje: ViajeSummary) => {
+        setViajeSeleccionado(viaje); // Abre el detalle del viaje
+    };
+
     return (
-        <div>
-            {viajes.map((viaje) => (
-                <div key={viaje.id}>
-                    {!viaje.finalizado && <Alert severity="warning">Viaje no finalizado</Alert>}
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Flota</th>
-                                <th>Galonaje Agregado</th>
-                                <th>Galonaje Consumido</th>
-                                <th>Galonaje Restante</th>
-                                <th>Gastos</th>
-                                <th>Pesca</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{viaje.flota}</td>
-                                <td>{viaje.petroleo_cargado}</td>
-                                <td>{viaje.petroleo_consumido}</td>
-                                <td>{viaje.flota_capacidad - viaje.petroleo_consumido}</td>
-                                <td>{viaje.gasto_total}</td>
-                                <td>{viaje.pesca_total}</td>
-                                
-                                <td>
-                                    {!viaje.finalizado && (
-                                        <>
-                                            <Button variant="contained" onClick={() => onAddCombustible(viaje.id)}>Agregar Combustible</Button>
-                                            <Button variant="contained" onClick={() => onAddGasto(viaje.id)}>Agregar Gasto</Button>
-                                            <Button variant="contained" onClick={() => onAddPesca(viaje.id)}>Agregar Pesca</Button>
-                                            <Button variant="contained" onClick={() => onFinalizar(viaje.id)}>Finalizar Viaje</Button>
-                                        </>
-                                    )}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </Table>
+        <div style={{ padding: '20px' }}>
+            <h2>Lista de Viajes</h2>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Flota</TableCell>
+                            <TableCell>Gastos</TableCell>
+                            <TableCell>Pesca</TableCell>
+                            <TableCell>Estado</TableCell>
+                            <TableCell>Acciones</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {viajes.map((viaje) => (
+                            <TableRow
+                                key={viaje.id}
+                                style={{
+                                    backgroundColor: viaje.finalizado ? '#e8f5e9' : '#ffebee',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => handleRowClick(viaje)}
+                            >
+                                <TableCell>{viaje.flota}</TableCell>
+                                <TableCell>{viaje.finalizado ? viaje.gasto_total : '-'}</TableCell>
+                                <TableCell>{viaje.finalizado ? viaje.pesca_total : '-'}</TableCell>
+                                <TableCell>
+                                    {viaje.finalizado ? 'Finalizado' : <Alert severity="warning">Viaje no finalizado</Alert>}
+                                </TableCell>
+                                <TableCell>
+                                    <Button
+                                        variant="contained"
+                                        color={viaje.finalizado ? 'primary' : 'secondary'}
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Evita la selección al hacer clic en el botón
+                                            handleRowClick(viaje);
+                                        }}
+                                    >
+                                        Ver detalles
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            {/* Modal o sección de detalles del viaje seleccionado */}
+            {viajeSeleccionado && (
+                <div style={{ marginTop: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
+                    <h3>Detalles del Viaje - {viajeSeleccionado.flota}</h3>
+                    {viajeSeleccionado.finalizado ? (
+                        <>
+                            <p>Gasto Total: {viajeSeleccionado.gasto_total}</p>
+                            <p>Pesca Total: {viajeSeleccionado.pesca_total}</p>
+                        </>
+                    ) : (
+                        <Alert severity="warning">Este viaje aún no ha sido finalizado. Puedes agregar datos adicionales antes de finalizar.</Alert>
+                    )}
+                    {/* Botones para agregar información o finalizar */}
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => console.log('Agregar datos de pesca o gastos')} // Lógica para agregar datos
+                        style={{ marginRight: '10px' }}
+                    >
+                        Agregar Datos
+                    </Button>
+                    {!viajeSeleccionado.finalizado && (
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => console.log('Finalizar viaje')} // Lógica para finalizar el viaje
+                        >
+                            Finalizar Viaje
+                        </Button>
+                    )}
                 </div>
-            ))}
+            )}
         </div>
     );
 };
