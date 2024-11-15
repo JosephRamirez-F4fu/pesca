@@ -1,10 +1,10 @@
-import { FlotaController } from "@/pesca/adapter/controllers";
 import { Router } from "express";
+import { FlotaController } from "@/pesca/adapter/controllers";
 
 export class FlotaRouter {
   private static router = Router();
   private static controller = new FlotaController();
-  
+
   static getRouter(): Router {
     this.router.get("/", this.controller.obtenerFlota);
     this.router.post("/", this.controller.crearFlota);

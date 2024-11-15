@@ -1,4 +1,4 @@
-import { Viaje, ViajeDTO } from "@/pesca/domain";
+import { Viaje, ViajeDTO, ViajeSummary } from "@/pesca/domain";
 export class IViajeRepository {
   async getViajes(): Promise<Viaje[]> {
     throw new Error("Method not implemented");
@@ -16,6 +16,9 @@ export class IViajeRepository {
     throw new Error("Method not implemented");
   }
   async getViajesByFlotaId(flotaId: number): Promise<Viaje[]> {
+    throw new Error("Method not implemented");
+  }
+  async getViajesSummary(): Promise<ViajeSummary[]> {
     throw new Error("Method not implemented");
   }
 }

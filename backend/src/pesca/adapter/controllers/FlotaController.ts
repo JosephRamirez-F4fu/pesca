@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { FlotaService } from "@/pesca/uses-cases";
 import { AppError } from "@/shared/errors/AppError";
 import { IFlotaRepository } from "@/pesca/domain";
-import { FlotaRepositoryPostgre } from "@/pesca/framework/repositories/FlotaRepositoryPostgre";
+import { FlotaRepositoryPostgre } from "@/pesca/framework/repositories";
 
 export class FlotaController {
   private flotaservice: FlotaService;
@@ -14,8 +14,12 @@ export class FlotaController {
 
   crearFlota = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { nombre, titular,capacidad } = req.body;
-      const flota = await this.flotaservice.createFlota({ nombre, titular,capacidad });
+      const { nombre, titular, capacidad } = req.body;
+      const flota = await this.flotaservice.createFlota({
+        nombre,
+        titular,
+        capacidad,
+      });
       res.json(flota);
     } catch (error) {
       if (error instanceof AppError) {
@@ -31,18 +35,15 @@ export class FlotaController {
     res.json(flotas);
   };
   editarFlota = async (req: Request, res: Response) => {
-    let flotaId = 0;
     try {
       const { id } = req.params;
-      flotaId = parseInt(id);
-    } catch (error) {
-      res.status(400).json({ message: "ID de flota inválido" });
-    }
-
-    try {
-      const { nombre, titular,capacidad } = req.body;
-      await this.flotaservice.updateFlota(flotaId, { nombre, titular, capacidad });
-      res.json({ message: "Flota actualizada" });
+      const { nombre, titular, capacidad } = req.body;
+      const floaupdated = await this.flotaservice.updateFlota(parseInt(id), {
+        nombre,
+        titular,
+        capacidad,
+      });
+      res.json(floaupdated);
     } catch (error) {
       if (error instanceof AppError) {
         res.status(error.statusCode).json({ message: error.message });
@@ -52,17 +53,10 @@ export class FlotaController {
     }
   };
   eliminarFlota = async (req: Request, res: Response) => {
-    let flotaId = 0;
     try {
       const { id } = req.params;
-      flotaId = parseInt(id);
-    } catch (error) {
-      res.status(400).json({ message: "ID de flota inválido" });
-    }
-
-    try {
-      await this.flotaservice.deleteFlota(flotaId);
-      res.json({ message: "Flota eliminada" });
+      const flotaDeleted = await this.flotaservice.deleteFlota(parseInt(id));
+      res.json(flotaDeleted);
     } catch (error) {
       if (error instanceof AppError) {
         res.status(error.statusCode).json({ message: error.message });
@@ -73,16 +67,9 @@ export class FlotaController {
   };
 
   obtenerFlotaPorId = async (req: Request, res: Response) => {
-    let flotaId = 0;
     try {
       const { id } = req.params;
-      flotaId = parseInt(id);
-    } catch (error) {
-      res.status(400).json({ message: "ID de flota inválido" });
-    }
-
-    try {
-      const flota = await this.flotaservice.getFlotaById(flotaId);
+      const flota = await this.flotaservice.getFlotaById(parseInt(id));
       res.json(flota);
     } catch (error) {
       if (error instanceof AppError) {

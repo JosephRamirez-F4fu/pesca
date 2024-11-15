@@ -1,4 +1,4 @@
 import { Server } from "@/pesca/framework/ExpressServer";
-const server = new Server(8080);
+const server = new Server(3000);
 
 server.start();

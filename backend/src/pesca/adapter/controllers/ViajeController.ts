@@ -1,6 +1,7 @@
+import { ViajeService } from "@/pesca/uses-cases";
 import { ViajeDTO, IViajeRepository, IFlotaRepository } from "@/pesca/domain";
 import { Request, Response } from "express";
-import { ViajeService } from "@/pesca/uses-cases";
+
 import {
   ViajeRepositoryPostgre,
   FlotaRepositoryPostgre,
@@ -19,11 +20,11 @@ export class ViajeController {
       this.flotaRepository
     );
   }
-  async createViaje(req: Request, res: Response) {
-    const viaje: ViajeDTO = req.body;
+  createViaje = async (req: Request, res: Response) => {
     try {
+      const viaje: ViajeDTO = req.body;
       const newViaje = await this.viajeService.createViaje(viaje);
-      res.status(201).json(newViaje);
+      res.status(200).json(newViaje);
     } catch (error) {
       if (error instanceof AppError) {
         res.status(error.statusCode).json({ message: error.message });
@@ -31,9 +32,9 @@ export class ViajeController {
         res.status(400).json({ message: "Internal server error" });
       }
     }
-  }
+  };
 
-  async getViajes(req: Request, res: Response) {
+  getViajes = async (req: Request, res: Response) => {
     try {
       const viajes = await this.viajeService.getViajes();
       res.status(200).json(viajes);
@@ -44,9 +45,9 @@ export class ViajeController {
         res.status(400).json({ message: "Internal server error" });
       }
     }
-  }
+  };
 
-  async getViajeById(req: Request, res: Response) {
+  getViajeById = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       res.status(400).json({ message: "Invalid id" });
@@ -63,9 +64,9 @@ export class ViajeController {
         res.status(400).json({ message: "Internal server error" });
       }
     }
-  }
+  };
 
-  async updateViaje(req: Request, res: Response) {
+  updateViaje = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       res.status(400).json({ message: "Invalid id" });
@@ -74,8 +75,8 @@ export class ViajeController {
 
     const viaje: ViajeDTO = req.body;
     try {
-      await this.viajeService.updateViaje(id, viaje);
-      res.status(204).send();
+      const viajeUpdated = await this.viajeService.updateViaje(id, viaje);
+      res.status(200).json(viajeUpdated);
     } catch (error) {
       if (error instanceof AppError) {
         res.status(error.statusCode).json({ message: error.message });
@@ -83,9 +84,9 @@ export class ViajeController {
         res.status(400).json({ message: "Internal server error" });
       }
     }
-  }
+  };
 
-  async deleteViaje(req: Request, res: Response) {
+  deleteViaje = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
       res.status(400).json({ message: "Invalid id" });
@@ -93,8 +94,8 @@ export class ViajeController {
     }
 
     try {
-      await this.viajeService.deleteViaje(id);
-      res.status(204).send();
+      const viajeDeleted = await this.viajeService.deleteViaje(id);
+      res.json(viajeDeleted);
     } catch (error) {
       if (error instanceof AppError) {
         res.status(error.statusCode).json({ message: error.message });
@@ -102,9 +103,9 @@ export class ViajeController {
         res.status(400).json({ message: "Internal server error" });
       }
     }
-  }
+  };
 
-  async getViajesByFlotaId(req: Request, res: Response) {
+  getViajesByFlotaId = async (req: Request, res: Response) => {
     const flotaId = parseInt(req.params.flotaId);
     if (isNaN(flotaId)) {
       res.status(400).json({ message: "Invalid flota id" });
@@ -121,5 +122,10 @@ export class ViajeController {
         res.status(400).json({ message: "Internal server error" });
       }
     }
-  }
+  };
+
+  getViajesSummary = async (req: Request, res: Response) => {
+    const viajes = await this.viajeService.getViajesSummary();
+    res.status(200).json(viajes);
+  };
 }

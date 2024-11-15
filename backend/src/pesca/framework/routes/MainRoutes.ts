@@ -1,6 +1,11 @@
 import { Router } from "express";
 
-import { PescaRouter,GastosViajeRouter, ViajeRouter, FlotaRouter } from "@/pesca/framework/routes";
+import {
+  PescaRouter,
+  GastosViajeRouter,
+  ViajeRouter,
+  FlotaRouter,
+} from "@/pesca/framework/routes";
 
 export class MainRouter {
   private static router = Router();

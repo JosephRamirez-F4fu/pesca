@@ -1,32 +1,20 @@
 import { Pesca, IPescaRepository, PescaDTO } from "@/pesca/domain";
-import { PescaModel,ViajeModel } from "@/pesca/framework/orm/models";
+import { PescaModel, ViajeModel } from "@/pesca/framework/orm/models";
+import { PescaMapper } from "@/pesca/domain/mapper/PescaMapper";
 
 export class PescaRepositoryPostgre implements IPescaRepository {
   async getPescas(): Promise<Pesca[]> {
     const pescas = await PescaModel.findAll();
     return pescas.map((pesca) => {
-      return {
-        id: pesca.id,
-        id_viaje: pesca.id_viaje,
-        pescado_tipo: pesca.pescado_tipo,
-        pescado_cajas: pesca.pescado_cajas,
-        precio: pesca.pescado_precio,
-      };
+      return PescaMapper.toDomain(pesca);
     });
   }
   async createPesca(pesca: PescaDTO): Promise<Pesca> {
-    const pescaCreated = await PescaModel.create({
-      id_viaje: pesca.id_viaje,
-      pescado_tipo: pesca.pescado_tipo,
-      pescado_cajas: pesca.pescado_cajas,
-    });
-    return {
-      id: pescaCreated.id,
-      id_viaje: pescaCreated.id_viaje,
-      pescado_tipo: pescaCreated.pescado_tipo,
-      pescado_cajas: pescaCreated.pescado_cajas,
-      precio: pescaCreated.pescado_precio,
-    };
+    console.log(PescaMapper.toPersistence(pesca));
+    const pescaCreated = await PescaModel.create(
+      PescaMapper.toPersistence(pesca)
+    );
+    return PescaMapper.toDomain(pescaCreated);
   }
 
   async updatePesca(id: number, pesca: PescaDTO): Promise<Pesca | null> {
@@ -34,17 +22,9 @@ export class PescaRepositoryPostgre implements IPescaRepository {
     if (!pescaToUpdate) {
       return null;
     }
-    pescaToUpdate.id_viaje = pesca.id_viaje;
-    pescaToUpdate.pescado_tipo = pesca.pescado_tipo;
-    pescaToUpdate.pescado_cajas = pesca.pescado_cajas;
-    await pescaToUpdate.save();
-    return {
-      id: pescaToUpdate.id,
-      id_viaje: pescaToUpdate.id_viaje,
-      pescado_tipo: pescaToUpdate.pescado_tipo,
-      pescado_cajas: pescaToUpdate.pescado_cajas,
-      precio: pescaToUpdate.pescado_precio,
-    };
+    PescaMapper.SetterToPersistance(pescaToUpdate, pesca);
+    const pescaUpdated = await pescaToUpdate.save();
+    return PescaMapper.toDomain(pescaUpdated);
   }
 
   async deletePesca(id: number): Promise<Pesca | null> {
@@ -53,13 +33,7 @@ export class PescaRepositoryPostgre implements IPescaRepository {
       return null;
     }
     await pescaToDelete.destroy();
-    return {
-      id: pescaToDelete.id,
-      id_viaje: pescaToDelete.id_viaje,
-      pescado_tipo: pescaToDelete.pescado_tipo,
-      pescado_cajas: pescaToDelete.pescado_cajas,
-      precio: pescaToDelete.pescado_precio,
-    };
+    return PescaMapper.toDomain(pescaToDelete);
   }
 
   async getPescaById(id: number): Promise<Pesca | null> {
@@ -67,13 +41,7 @@ export class PescaRepositoryPostgre implements IPescaRepository {
     if (!pesca) {
       return null;
     }
-    return {
-      id: pesca.id,
-      id_viaje: pesca.id_viaje,
-      pescado_tipo: pesca.pescado_tipo,
-      pescado_cajas: pesca.pescado_cajas,
-      precio: pesca.pescado_precio,
-    };
+    return PescaMapper.toDomain(pesca);
   }
 
   async getPescaByViajeId(id: number): Promise<Pesca[] | null> {
@@ -82,13 +50,7 @@ export class PescaRepositoryPostgre implements IPescaRepository {
       return null;
     }
     return pescas.map((pesca) => {
-      return {
-        id: pesca.id,
-        id_viaje: pesca.id_viaje,
-        pescado_tipo: pesca.pescado_tipo,
-        pescado_cajas: pesca.pescado_cajas,
-        precio: pesca.pescado_precio,
-      };
+      return PescaMapper.toDomain(pesca);
     });
   }
 
@@ -105,15 +67,7 @@ export class PescaRepositoryPostgre implements IPescaRepository {
       return null;
     }
     return pescas.map((pesca) => {
-      return {
-        id: pesca.id,
-        id_viaje: pesca.id_viaje,
-        pescado_tipo: pesca.pescado_tipo,
-        pescado_cajas: pesca.pescado_cajas,
-        precio: pesca.pescado_precio,
-      };
+      return PescaMapper.toDomain(pesca);
     });
   }
-
-  
 }

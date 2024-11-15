@@ -31,9 +31,13 @@ export class ViajeService {
     if (!viaje.petroleo_consumido) {
       throw new AppError("Petroleo Consumido requerido", 400);
     }
-    if (!viaje.petroleo_restante) {
-      throw new AppError("Petroleo Restante requerido", 400);
+    if (!viaje.costo_petroleo_cargado) {
+      throw new AppError("Costo de petroleo cargado requerido", 400);
     }
+    if (!viaje.costo_petroleo_consumido) {
+      throw new AppError("Costo de petroleo consumido requerido", 400);
+    }
+
     if (!(await this.flotaRepository.getFlotaById(viaje.flota_id))) {
       throw new AppError("Flota no encontrada", 404);
     }
@@ -49,21 +53,22 @@ export class ViajeService {
       !viaje.flota_id &&
       !viaje.petroleo_cargado &&
       !viaje.petroleo_consumido &&
-      !viaje.petroleo_restante
+      !viaje.costo_petroleo_cargado &&
+      !viaje.costo_petroleo_consumido
     ) {
       throw new AppError("Datos de viaje requeridos", 400);
     }
     if (!(await this.flotaRepository.getFlotaById(viaje.flota_id))) {
       throw new AppError("Flota no encontrada", 404);
     }
-    await this.repository.updateViaje(id, viaje);
+    return await this.repository.updateViaje(id, viaje);
   }
 
   async deleteViaje(id: number) {
     if (!(await this.getViajeById(id))) {
       throw new AppError("Viaje no encontrado", 404);
     }
-    await this.repository.deleteViaje(id);
+    return await this.repository.deleteViaje(id);
   }
 
   async getViajesByFlotaId(flotaId: number) {
@@ -71,5 +76,9 @@ export class ViajeService {
       throw new AppError("Flota no encontrada", 404);
     }
     return await this.repository.getViajesByFlotaId(flotaId);
+  }
+
+  async getViajesSummary() {
+    return await this.repository.getViajesSummary();
   }
 }

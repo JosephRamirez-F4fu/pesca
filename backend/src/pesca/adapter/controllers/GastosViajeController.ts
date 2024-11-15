@@ -25,7 +25,6 @@ export class GastosViajeController {
   createGastosViaje = async (req: Request, res: Response) => {
     try {
       const { id_viaje, concepto, importe } = req.body;
-
       const gastosViaje = await this.gastosViajeService.createGastoViaje({
         id_viaje,
         concepto,
@@ -78,13 +77,16 @@ export class GastosViajeController {
     try {
       const { id } = req.params;
       const { id_viaje, concepto, importe } = req.body;
-      await this.gastosViajeService.updateGastoViaje(parseInt(id), {
-        id: parseInt(id),
-        id_viaje,
-        concepto,
-        importe,
-      });
-      res.json({ message: "Gastos de viaje actualizado" });
+      const gastosUpdated = await this.gastosViajeService.updateGastoViaje(
+        parseInt(id),
+        {
+          id: parseInt(id),
+          id_viaje,
+          concepto,
+          importe,
+        }
+      );
+      res.json(gastosUpdated);
     } catch (error) {
       if (error instanceof AppError) {
         res.status(error.statusCode).json({ message: error.message });
@@ -97,8 +99,10 @@ export class GastosViajeController {
   deleteGastosViaje = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      await this.gastosViajeService.deleteGastoViaje(parseInt(id));
-      res.json({ message: "Gastos de viaje eliminado" });
+      const gastosDeleted = await this.gastosViajeService.deleteGastoViaje(
+        parseInt(id)
+      );
+      res.json(gastosDeleted);
     } catch (error) {
       if (error instanceof AppError) {
         res.status(error.statusCode).json({ message: error.message });

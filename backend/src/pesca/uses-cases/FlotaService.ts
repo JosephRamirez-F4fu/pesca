@@ -20,24 +20,7 @@ export class FlotaService {
   }
 
   async createFlota(flota: FlotaDTO) {
-    if (!flota.nombre) {
-      throw new AppError("Nombre de flota requerido", 400);
-    }
-    if (!flota.titular) {
-      throw new AppError("Titular de flota requerido", 400);
-    }
-    if (flota.nombre.length > 128) {
-      throw new AppError("Nombre de flota muy largo", 400);
-    }
-    if (flota.titular.length > 128) {
-      throw new AppError("Titular de flota muy largo", 400);
-    }
-    if (flota.nombre.length < 3) {
-      throw new AppError("Nombre de flota muy corto", 400);
-    }
-    if (flota.titular.length < 3) {
-      throw new AppError("Titular de flota muy corto", 400);
-    }
+    this.validateFlota(flota);
     const flotaExistente = await this.repository.getFlotaByNombreAndTitular(
       flota.nombre,
       flota.titular
@@ -52,17 +35,15 @@ export class FlotaService {
     if (!(await this.getFlotaById(id))) {
       throw new AppError("Flota no encontrada", 404);
     }
-    if (!flota.nombre && !flota.titular) {
-      throw new AppError("Nombre o titular de flota requerido", 400);
-    }
-    this.repository.updateFlota(id, flota);
+    this.validateFlota(flota);
+    return await this.repository.updateFlota(id, flota);
   }
 
   async deleteFlota(id: number) {
     if (!(await this.getFlotaById(id))) {
       throw new AppError("Flota no encontrada", 404);
     }
-    this.repository.deleteFlota(id);
+    return await this.repository.deleteFlota(id);
   }
 
   async getFlotasByTitular(titular: string) {
@@ -100,5 +81,29 @@ export class FlotaService {
       throw new AppError("Flota no encontrada", 404);
     }
     return flota;
+  }
+
+  validateFlota(flota: FlotaDTO) {
+    if (!flota.nombre) {
+      throw new AppError("Nombre de flota requerido", 400);
+    }
+    if (!flota.titular) {
+      throw new AppError("Titular de flota requerido", 400);
+    }
+    if (flota.nombre.length > 128) {
+      throw new AppError("Nombre de flota muy largo", 400);
+    }
+    if (flota.titular.length > 128) {
+      throw new AppError("Titular de flota muy largo", 400);
+    }
+    if (flota.nombre.length < 3) {
+      throw new AppError("Nombre de flota muy corto", 400);
+    }
+    if (flota.titular.length < 3) {
+      throw new AppError("Titular de flota muy corto", 400);
+    }
+    if (flota.capacidad <= 0) {
+      throw new AppError("Capacidad de flota debe ser mayor a 0", 400);
+    }
   }
 }

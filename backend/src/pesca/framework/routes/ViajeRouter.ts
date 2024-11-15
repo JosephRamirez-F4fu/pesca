@@ -1,33 +1,17 @@
-import { Router } from 'express';
+import { Router } from "express";
+import { ViajeController } from "@/pesca/adapter/controllers";
 export class ViajeRouter {
-    private static router = Router();
-    static getRouter(): Router {
-        this.router.get("/", (req, res) => {
-            res.json({ message: "Obtener todos los Viajes" });
-        }
-        );
-        this.router.post("/", (req, res) => {
-            res.json({ message: "Crear Viaje" });
-        }
-        );
-        this.router.put("/:id", (req, res) => {
-            res.json({ message: "Actualizar Viaje" });
-        }
-        );
-        this.router.delete("/:id", (req, res) => {
-            res.json({ message: "Eliminar Viaje" });
-        }
-        );
-        this.router.get("/:id", (req, res) => {
-            res.json({ message: "Obtener Viaje por Id" });
-        }
-        );
-        this.router.get("/flota/:id", (req, res) => {
-            res.json({ message: "Obtener  Viajes por Flota id" });
-        }
-        );
+  private static router = Router();
+  private static controller = new ViajeController();
+  static getRouter(): Router {
+    this.router.get("/", this.controller.getViajes);
+    this.router.get("/summary", this.controller.getViajesSummary);
+    this.router.post("/", this.controller.createViaje);
+    this.router.put("/:id", this.controller.updateViaje);
+    this.router.delete("/:id", this.controller.deleteViaje);
+    this.router.get("/:id", this.controller.getViajeById);
+    this.router.get("/flota/:id", this.controller.getViajesByFlotaId);
 
-        
-        return this.router;
-    }
+    return this.router;
+  }
 }

@@ -10,11 +10,14 @@ class Config {
   };
 }
 
-const db = new Sequelize(Config.DB.DB, Config.DB.USER, Config.DB.PASSWORD, {
-  host: Config.DB.HOST,
-  port: Config.DB.PORT,
-  dialect: Config.DB.dialect,
-  logging: false,
-});
-
-export default db;
+export const db = new Sequelize(
+  Config.DB.DB,
+  Config.DB.USER,
+  Config.DB.PASSWORD,
+  {
+    host: Config.DB.HOST,
+    port: Config.DB.PORT,
+    dialect: Config.DB.dialect,
+    logging: false,
+  }
+);

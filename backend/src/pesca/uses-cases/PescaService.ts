@@ -43,18 +43,17 @@ export class PescaService {
     if (!pesca.pescado_cajas) {
       throw new AppError("Cajas de pescado requeridas", 400);
     }
-    if(!pesca.precio){
+    if (!pesca.precio) {
       throw new AppError("Precio de pescado requerido", 400);
     }
-    if (pesca.precio>0) {
+    if (pesca.precio <= 0) {
       throw new AppError("Precio de pescado debe ser mayor a 0", 400);
     }
 
     if (!(await this.viajeRepository.getViajeById(pesca.id_viaje))) {
       throw new AppError("Viaje no encontrado", 404);
     }
-    const pescaCreated = await this.repository.createPesca(pesca);
-    return pescaCreated;
+    return await this.repository.createPesca(pesca);
   }
 
   async updatePesca(id: number, pesca: PescaDTO) {
@@ -64,14 +63,14 @@ export class PescaService {
     if (!pesca.id_viaje && !pesca.pescado_tipo && !pesca.pescado_cajas) {
       throw new AppError("Datos de pesca requeridos", 400);
     }
-    this.repository.updatePesca(id, pesca);
+    return await this.repository.updatePesca(id, pesca);
   }
 
   async deletePesca(id: number) {
     if (!(await this.getPescaById(id))) {
       throw new AppError("Pesca no encontrada", 404);
     }
-    this.repository.deletePesca(id);
+    return await this.repository.deletePesca(id);
   }
 
   async getPescaByViajeId(id: number) {

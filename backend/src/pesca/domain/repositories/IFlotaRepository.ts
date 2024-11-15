@@ -19,7 +19,7 @@ export class IFlotaRepository {
   async getFlotasByTitular(titular: string): Promise<Flota[]> {
     throw new Error("Method not implemented");
   }
-  async getFlotasByNombre(nombre: string): Promise<Flota[] | null> {
+  async getFlotasByNombre(nombre: string): Promise<Flota[]> {
     throw new Error("Method not implemented");
   }
   async getFlotaByNombreAndTitular(

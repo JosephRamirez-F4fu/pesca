@@ -1,7 +1,8 @@
 import { Model, DataTypes } from "sequelize";
-import db from "../config/db";
+import { Flota, Viaje, GastosViaje, Pesca } from "@/pesca/domain/model";
+import { db } from "../config/db";
 
-export class FlotaModel extends Model {
+export class FlotaModel extends Model implements Flota {
   public id!: number;
   public nombre!: string;
   public titular!: string;
@@ -36,12 +37,15 @@ FlotaModel.init(
   }
 );
 
-export class ViajeModel extends Model {
+export class ViajeModel extends Model implements Viaje {
   public id!: number;
   public petroleo_cargado!: number;
   public petroleo_consumido!: number;
-  public petroleo_restante!: number;
+  public costo_petroleo_cargado!: number;
+  public costo_petroleo_consumido!: number;
+  public costo_viveres!: number;
   public flota_id!: number;
+  public terminado!: boolean;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -55,18 +59,30 @@ ViajeModel.init(
     },
     petroleo_cargado: {
       type: new DataTypes.FLOAT(),
-      allowNull: false,
+      allowNull: true,
     },
     petroleo_consumido: {
       type: new DataTypes.FLOAT(),
-      allowNull: false,
+      allowNull: true,
     },
-    petroleo_restante: {
+    costo_petroleo_cargado: {
       type: new DataTypes.FLOAT(),
-      allowNull: false,
+      allowNull: true,
+    },
+    costo_petroleo_consumido: {
+      type: new DataTypes.FLOAT(),
+      allowNull: true,
+    },
+    costo_viveres: {
+      type: new DataTypes.FLOAT(),
+      allowNull: true,
     },
     flota_id: {
       type: new DataTypes.INTEGER(),
+      allowNull: false,
+    },
+    terminado: {
+      type: new DataTypes.BOOLEAN(),
       allowNull: false,
     },
   },
@@ -76,12 +92,12 @@ ViajeModel.init(
   }
 );
 
-export class PescaModel extends Model {
+export class PescaModel extends Model implements Pesca {
   public id!: number;
   public id_viaje!: number;
   public pescado_tipo!: string;
   public pescado_cajas!: number;
-  public pescado_precio!: number;
+  public precio!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -105,7 +121,7 @@ PescaModel.init(
       type: new DataTypes.INTEGER(),
       allowNull: false,
     },
-    pescado_precio: {
+    precio: {
       type: new DataTypes.FLOAT(),
       allowNull: false,
     },
@@ -116,7 +132,7 @@ PescaModel.init(
   }
 );
 
-export class GastosViajeModel extends Model {
+export class GastosViajeModel extends Model implements GastosViaje {
   public id!: number;
   public id_viaje!: number;
   public concepto!: string;
@@ -177,5 +193,4 @@ GastosViajeModel.belongsTo(ViajeModel, {
   as: "viaje",
 });
 
-
-db.sync({ force: true }).then(() => console.log("Database synchronized"));
+db.sync().then(() => console.log("Database synchronized"));

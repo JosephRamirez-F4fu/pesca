@@ -10,7 +10,7 @@ export class IGastosViajeRepository {
   async updateGastosViaje(
     id: number,
     gastosViaje: GastosViajeDTO
-  ): Promise< GastosViaje | null> {
+  ): Promise<GastosViaje | null> {
     throw new Error("Method not implemented");
   }
   async deleteGastosViaje(id: number): Promise<GastosViaje | null> {

@@ -1,3 +1,7 @@
+export * from "./mapper/FlotaMapper";
+export * from "./mapper/GastosViajeMapper";
+export * from "./mapper/PescaMapper";
+export * from "./mapper/ViajeMapper";
 export * from "./model/Flota";
 export * from "./model/GastosViaje";
 export * from "./model/Pesca";

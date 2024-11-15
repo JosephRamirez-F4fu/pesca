@@ -1,16 +1,16 @@
-import { IGastosViajeRepository, GastosViaje, GastosViajeDTO } from "@/pesca/domain";
-import { GastosViajeModel,ViajeModel } from "@/pesca/framework/orm/models";
+import {
+  IGastosViajeRepository,
+  GastosViaje,
+  GastosViajeDTO,
+} from "@/pesca/domain";
+import { GastosViajeModel, ViajeModel } from "@/pesca/framework/orm/models";
+import { GastosViajeMapper } from "@/pesca/domain/mapper/GastosViajeMapper";
 
 export class GastoViajeRepositoryPostgre extends IGastosViajeRepository {
   async getGastosViaje(): Promise<GastosViaje[]> {
     const gastosViaje = await GastosViajeModel.findAll();
     return gastosViaje.map((gastoViaje) => {
-      return {
-        id: gastoViaje.id,
-        concepto: gastoViaje.concepto,
-        importe: gastoViaje.importe,
-        id_viaje: gastoViaje.id_viaje,
-      };
+      return GastosViajeMapper.toDomain(gastoViaje);
     });
   }
 
@@ -19,26 +19,14 @@ export class GastoViajeRepositoryPostgre extends IGastosViajeRepository {
     if (!gastoViaje) {
       return null;
     }
-    return {
-      id: gastoViaje.id,
-      concepto: gastoViaje.concepto,
-      importe: gastoViaje.importe,
-      id_viaje: gastoViaje.id_viaje,
-    };
+    return GastosViajeMapper.toDomain(gastoViaje);
   }
 
   async createGastosViaje(gastoViaje: GastosViajeDTO): Promise<GastosViaje> {
-    const newGastoViaje = await GastosViajeModel.create({
-      concepto: gastoViaje.concepto,
-      importe: gastoViaje.importe,
-      id_viaje: gastoViaje.id_viaje,
-    });
-    return {
-      id: newGastoViaje.id,
-      concepto: newGastoViaje.concepto,
-      importe: newGastoViaje.importe,
-      id_viaje: newGastoViaje.id_viaje,
-    };
+    const newGastoViaje = await GastosViajeModel.create(
+      GastosViajeMapper.toPersistence(gastoViaje)
+    );
+    return GastosViajeMapper.toDomain(newGastoViaje);
   }
 
   async updateGastosViaje(
@@ -49,76 +37,47 @@ export class GastoViajeRepositoryPostgre extends IGastosViajeRepository {
     if (!gastoViajeToUpdate) {
       return null;
     }
-    gastoViajeToUpdate.concepto = gastoViaje.concepto;
-    gastoViajeToUpdate.importe = gastoViaje.importe;
-    gastoViajeToUpdate.id_viaje = gastoViaje.id_viaje;
-
-    await gastoViajeToUpdate.save();
-    return {
-      id: gastoViajeToUpdate.id,
-      concepto: gastoViajeToUpdate.concepto,
-      importe: gastoViajeToUpdate.importe,
-      id_viaje: gastoViajeToUpdate.id_viaje,
-    };
+    GastosViajeMapper.SetterToPersistance(gastoViajeToUpdate, gastoViaje);
+    const gastosUpdated = await gastoViajeToUpdate.save();
+    return GastosViajeMapper.toDomain(gastosUpdated);
   }
 
-  async deleteGastosViaje(id: number): Promise<GastosViaje|null> {
+  async deleteGastosViaje(id: number) {
     const gastoViajeToDelete = await GastosViajeModel.findByPk(id);
     if (!gastoViajeToDelete) {
       return null;
     }
     await gastoViajeToDelete.destroy();
-    return {
-      id: gastoViajeToDelete.id,
-      concepto: gastoViajeToDelete.concepto,
-      importe: gastoViajeToDelete.importe,
-      id_viaje: gastoViajeToDelete.id_viaje,
-    };
+    return GastosViajeMapper.toDomain(gastoViajeToDelete);
   }
 
   async getGastosViajeByConcepto(concepto: string): Promise<GastosViaje[]> {
     const gastosViaje = await GastosViajeModel.findAll({ where: { concepto } });
     return gastosViaje.map((gastoViaje) => {
-      return {
-        id: gastoViaje.id,
-        concepto: gastoViaje.concepto,
-        importe: gastoViaje.importe,
-        id_viaje: gastoViaje.id_viaje,
-      };
+      return GastosViajeMapper.toDomain(gastoViaje);
     });
   }
 
   async getGastosViajeByFlotaId(flotaId: number): Promise<GastosViaje[]> {
-    const gastosViaje = await GastosViajeModel.findAll(
-      {
-        include: [
-          {
-            model: ViajeModel,
-            where: { id_flota: flotaId },
-          },
-        ],
-      }
-    );
+    const gastosViaje = await GastosViajeModel.findAll({
+      include: [
+        {
+          model: ViajeModel,
+          where: { id_flota: flotaId },
+        },
+      ],
+    });
     return gastosViaje.map((gastoViaje) => {
-      return {
-        id: gastoViaje.id,
-        concepto: gastoViaje.concepto,
-        importe: gastoViaje.importe,
-        id_viaje: gastoViaje.id_viaje,
-      };
+      return GastosViajeMapper.toDomain(gastoViaje);
     });
   }
 
   async getGastosViajeByViajeId(id: number): Promise<GastosViaje[]> {
-    const gastosViaje = await GastosViajeModel.findAll({ where: { id_viaje: id } });
+    const gastosViaje = await GastosViajeModel.findAll({
+      where: { id_viaje: id },
+    });
     return gastosViaje.map((gastoViaje) => {
-      return {
-        id: gastoViaje.id,
-        concepto: gastoViaje.concepto,
-        importe: gastoViaje.importe,
-        id_viaje: gastoViaje.id_viaje,
-      };
+      return GastosViajeMapper.toDomain(gastoViaje);
     });
   }
-
 }

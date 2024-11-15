@@ -74,14 +74,14 @@ export class GastosViajeService {
     if (gastoViaje.id_viaje) {
       throw new AppError("No se puede actualizar el viaje de un gasto", 400);
     }
-    await this.repository.updateGastosViaje(id, gastoViaje);
+    return await this.repository.updateGastosViaje(id, gastoViaje);
   }
 
   async deleteGastoViaje(id: number) {
     if (!(await this.getGastoViajeById(id))) {
       throw new AppError("Gasto de viaje no encontrado", 404);
     }
-    await this.repository.deleteGastosViaje(id);
+    return await this.repository.deleteGastosViaje(id);
   }
 
   async getGastosViajeByViajeId(id: number) {
