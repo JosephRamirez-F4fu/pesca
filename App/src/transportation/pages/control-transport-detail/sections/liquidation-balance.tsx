@@ -3,7 +3,7 @@ import {
   Autocomplete,
   Box,
   Button,
-  Card,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -20,6 +20,15 @@ import {
 } from "../../../dto/vehicle_route_balance";
 import { CrudModalCard } from "../../../../shared/components/crud-modal-card";
 import { useCrudDialog } from "../../../../shared/hooks/useCrudDialog";
+import {
+  ActionButton,
+  DangerButton,
+  fieldSx,
+  primaryButtonSx,
+  SectionSurface,
+  SummaryPill,
+  tableWrapSx,
+} from "./detail-surface";
 
 export const LiquidationBalance = () => {
   const { routeSelected } = useVehicleRoute();
@@ -70,12 +79,20 @@ export const LiquidationBalance = () => {
   };
 
   return (
-    <Box>
-      <Card sx={{ padding: 2, boxShadow: 3, borderRadius: 2, m: 2 }}>
-        <Typography variant="h6">Balanza</Typography>
-        <Button variant="contained" onClick={() => openCreate()}>
-          Añadir
-        </Button>
+    <SectionSurface
+      eyebrow="Pesajes"
+      title="Balanza"
+      subtitle="Agrupa cobros por punto para que el resumen final se lea rapido y sin duplicar contexto."
+      action={
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+          <SummaryPill label="Registros" value={String(vehicleRouteBalance.length)} />
+          <Button sx={primaryButtonSx} onClick={() => openCreate()}>
+            Anadir
+          </Button>
+        </Stack>
+      }
+    >
+      <Box sx={tableWrapSx}>
         <Table>
           <TableHead>
             <TableRow>
@@ -87,31 +104,33 @@ export const LiquidationBalance = () => {
           <TableBody>
             {vehicleRouteBalance.map((currentBalance) => (
               <TableRow key={currentBalance.id}>
-                <TableCell>{currentBalance.place}</TableCell>
-                <TableCell>{currentBalance.balance}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleEdit(currentBalance)}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => void deleteBalance(currentBalance.id)}
-                  >
-                    Eliminar
-                  </Button>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    {currentBalance.place}
+                  </Typography>
+                </TableCell>
+                <TableCell>S/ {currentBalance.balance.toFixed(2)}</TableCell>
+                <TableCell sx={{ width: 1, minWidth: 128 }}>
+                  <Stack spacing={1}>
+                    <ActionButton fullWidth onClick={() => handleEdit(currentBalance)}>
+                      Editar
+                    </ActionButton>
+                    <DangerButton
+                      fullWidth
+                      onClick={() => void deleteBalance(currentBalance.id)}
+                    >
+                      Eliminar
+                    </DangerButton>
+                  </Stack>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </Card>
+      </Box>
       <CrudModalCard
         open={open}
-        title={editMode ? "Editar Balance" : "Añadir Balance"}
+        title={editMode ? "Editar Balance" : "Anadir Balance"}
         submitLabel={editMode ? "Actualizar" : "Guardar"}
         onClose={() => closeDialog(handleClose)}
         onSubmit={() => void handleSubmit()}
@@ -125,6 +144,7 @@ export const LiquidationBalance = () => {
             <TextField
               {...params}
               label="Lugar"
+              sx={fieldSx}
               required
               onChange={(event) =>
                 setBalance({
@@ -138,6 +158,7 @@ export const LiquidationBalance = () => {
         <TextField
           label="Monto"
           type="number"
+          sx={fieldSx}
           value={balance.balance}
           onChange={(event) =>
             setBalance({ ...balance, balance: Number(event.target.value) || 0 })
@@ -145,6 +166,6 @@ export const LiquidationBalance = () => {
           required
         />
       </CrudModalCard>
-    </Box>
+    </SectionSurface>
   );
 };

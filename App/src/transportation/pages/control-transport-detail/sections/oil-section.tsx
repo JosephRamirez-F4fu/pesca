@@ -3,11 +3,11 @@ import {
   Autocomplete,
   Box,
   Button,
-  Card,
+  Chip,
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -33,10 +33,37 @@ import {
 import { CrudModalCard } from "../../../../shared/components/crud-modal-card";
 import { useCrudDialog } from "../../../../shared/hooks/useCrudDialog";
 import { formatTransportDate } from "../utils";
+import {
+  ActionButton,
+  DangerButton,
+  fieldSx,
+  primaryButtonSx,
+  SectionSurface,
+  SummaryPill,
+  tableWrapSx,
+} from "./detail-surface";
 
 export const ControlTransportDetailOilSection = () => {
   return (
-    <Box>
+    <Box sx={{ display: "grid", gap: 2.5 }}>
+      <Stack spacing={0.8} sx={{ px: { xs: 0.5, md: 1 }, pt: 0.5 }}>
+        <Typography
+          sx={{
+            fontSize: 11,
+            letterSpacing: "0.24em",
+            textTransform: "uppercase",
+            color: "#0f7c78",
+          }}
+        >
+          Petroleo
+        </Typography>
+        <Typography
+          variant="h4"
+          sx={{ color: "#16324f", fontWeight: 800, maxWidth: 720 }}
+        >
+          Seguimiento de consumo controlado, computado y adicional
+        </Typography>
+      </Stack>
       <ControlOilControlled />
       <ControlOilJustified />
       <ResultOil />
@@ -137,18 +164,26 @@ const ControlOilControlled = () => {
   };
 
   return (
-    <Box>
-      <Card sx={{ padding: 2, boxShadow: 3, borderRadius: 2, m: 2 }}>
-        <Typography variant="h6">Control de Ruta</Typography>
-        <Button variant="contained" onClick={() => openCreate()}>
-          Añadir
-        </Button>
+    <SectionSurface
+      eyebrow="Consumo controlado"
+      title="Control de ruta"
+      subtitle="Compara el consumo real con el establecido en cada tramo sin mezclarlo con los extras."
+      action={
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+          <SummaryPill label="Tramos" value={String(vehicleRoutes.length)} />
+          <Button sx={primaryButtonSx} onClick={() => openCreate()}>
+            Anadir
+          </Button>
+        </Stack>
+      }
+    >
+      <Box sx={tableWrapSx}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Ruta</TableCell>
-              <TableCell>Uso de Petróleo</TableCell>
-              <TableCell>Petroleo Establecido</TableCell>
+              <TableCell>Uso real</TableCell>
+              <TableCell>Uso base</TableCell>
               <TableCell>Fecha</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
@@ -156,40 +191,53 @@ const ControlOilControlled = () => {
           <TableBody>
             {vehicleRoutes.map((route) => (
               <TableRow key={route.id}>
-                <TableCell>{handleRouteLabel(route.id_route)}</TableCell>
-                <TableCell>{route.oil_use}</TableCell>
-                <TableCell>{handleEstablishedOil(route.id_route)}</TableCell>
-                <TableCell>{formatTransportDate(route.createdAt, "dd/MM")}</TableCell>
                 <TableCell>
-                  <Button variant="contained" onClick={() => handleEdit(route)}>
-                    Editar
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => void deleteRoute(route.id)}
-                  >
-                    Eliminar
-                  </Button>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    {handleRouteLabel(route.id_route)}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Chip
+                    label={`${route.oil_use} gal`}
+                    sx={{
+                      borderRadius: 999,
+                      backgroundColor: "rgba(15, 124, 120, 0.08)",
+                      color: "#0f3d3e",
+                      fontWeight: 700,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>{handleEstablishedOil(route.id_route)} gal</TableCell>
+                <TableCell>{formatTransportDate(route.createdAt, "dd/MM")}</TableCell>
+                <TableCell sx={{ width: 1, minWidth: 128 }}>
+                  <Stack spacing={1}>
+                    <ActionButton fullWidth onClick={() => handleEdit(route)}>
+                      Editar
+                    </ActionButton>
+                    <DangerButton
+                      fullWidth
+                      onClick={() => void deleteRoute(route.id)}
+                    >
+                      Eliminar
+                    </DangerButton>
+                  </Stack>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </Card>
+      </Box>
 
       <CrudModalCard
         open={open}
-        title={editMode ? "Editar Uso de Petróleo" : "Añadir Uso de Petróleo"}
+        title={editMode ? "Editar Uso de Petroleo" : "Anadir Uso de Petroleo"}
         submitLabel={editMode ? "Actualizar" : "Guardar"}
         onClose={() => closeDialog(handleClose)}
         onSubmit={() => void handleSubmit()}
       >
-        <FormControl fullWidth>
-          <InputLabel id="route-select-label">Ruta</InputLabel>
+        <FormControl fullWidth sx={fieldSx}>
           <Select
-            labelId="route-select-label"
-            label="Ruta"
+            displayEmpty
             value={oilControlled.id_route || ""}
             onChange={(event) =>
               setOilControlled({
@@ -199,6 +247,7 @@ const ControlOilControlled = () => {
             }
             required
           >
+            <MenuItem value="">Ruta</MenuItem>
             {vehicleRoutesFiltered.map((route) => (
               <MenuItem key={route.id} value={route.id}>
                 {route.init} - {route.end}
@@ -207,8 +256,9 @@ const ControlOilControlled = () => {
           </Select>
         </FormControl>
         <TextField
-          label="Uso de Petróleo"
+          label="Uso de petroleo"
           type="number"
+          sx={fieldSx}
           value={oilControlled.oil_use}
           onChange={(event) =>
             setOilControlled({
@@ -221,6 +271,7 @@ const ControlOilControlled = () => {
         <TextField
           label="Fecha"
           type="date"
+          sx={fieldSx}
           value={oilControlled.createdAt}
           onChange={(event) =>
             setOilControlled({
@@ -232,7 +283,7 @@ const ControlOilControlled = () => {
           required
         />
       </CrudModalCard>
-    </Box>
+    </SectionSurface>
   );
 };
 
@@ -293,16 +344,24 @@ const ControlOilJustified = () => {
   };
 
   return (
-    <Box>
-      <Card sx={{ padding: 2, boxShadow: 3, borderRadius: 2, m: 2 }}>
-        <Typography variant="h6">Petroleo Adicional</Typography>
-        <Button variant="contained" onClick={() => openCreate()}>
-          Añadir
-        </Button>
+    <SectionSurface
+      eyebrow="Consumo adicional"
+      title="Petroleo extra"
+      subtitle="Separa justificaciones operativas para detectar rapido cuando el desvio es real y no parte de la ruta."
+      action={
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+          <SummaryPill label="Extras" value={String(routesOilUse.length)} />
+          <Button sx={primaryButtonSx} onClick={() => openCreate()}>
+            Anadir
+          </Button>
+        </Stack>
+      }
+    >
+      <Box sx={tableWrapSx}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Descripción</TableCell>
+              <TableCell>Descripcion</TableCell>
               <TableCell>Cantidad</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
@@ -310,32 +369,34 @@ const ControlOilJustified = () => {
           <TableBody>
             {routesOilUse.map((currentOilUse) => (
               <TableRow key={currentOilUse.id}>
-                <TableCell>{currentOilUse.description}</TableCell>
-                <TableCell>{currentOilUse.oil_use}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleEdit(currentOilUse)}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => void deleteRouteOilUse(currentOilUse.id)}
-                  >
-                    Eliminar
-                  </Button>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    {currentOilUse.description}
+                  </Typography>
+                </TableCell>
+                <TableCell>{currentOilUse.oil_use} gal</TableCell>
+                <TableCell sx={{ width: 1, minWidth: 128 }}>
+                  <Stack spacing={1}>
+                    <ActionButton fullWidth onClick={() => handleEdit(currentOilUse)}>
+                      Editar
+                    </ActionButton>
+                    <DangerButton
+                      fullWidth
+                      onClick={() => void deleteRouteOilUse(currentOilUse.id)}
+                    >
+                      Eliminar
+                    </DangerButton>
+                  </Stack>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </Card>
+      </Box>
 
       <CrudModalCard
         open={open}
-        title={editMode ? "Editar Uso de Petróleo" : "Añadir Uso de Petróleo"}
+        title={editMode ? "Editar Uso de Petroleo" : "Anadir Uso de Petroleo"}
         submitLabel={editMode ? "Actualizar" : "Guardar"}
         onClose={() => closeDialog(handleClose)}
         onSubmit={() => void handleSubmit()}
@@ -350,7 +411,8 @@ const ControlOilJustified = () => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Descripción"
+              label="Descripcion"
+              sx={fieldSx}
               required
               onChange={(event) =>
                 setOilUse({
@@ -362,8 +424,9 @@ const ControlOilJustified = () => {
           )}
         />
         <TextField
-          label="Uso de Petróleo"
+          label="Uso de petroleo"
           type="number"
+          sx={fieldSx}
           value={oilUse.oil_use}
           onChange={(event) =>
             setOilUse({
@@ -374,7 +437,7 @@ const ControlOilJustified = () => {
           required
         />
       </CrudModalCard>
-    </Box>
+    </SectionSurface>
   );
 };
 
@@ -423,38 +486,80 @@ const ResultOil = () => {
   }, [routeSelected, vehicleRoutes, routes, routesOilUse]);
 
   return (
-    <Box
-      sx={{
-        padding: 2,
-        marginTop: 2,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        bgcolor: "primary.main",
-      }}
+    <SectionSurface
+      eyebrow="Cierre de petroleo"
+      title="Liquidacion de petroleo"
+      subtitle="Consolida lo controlado, lo computado y el extra para detectar diferencia real sin revisar tablas."
+      action={
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+          <SummaryPill label="Real usado" value={`${resultControlled} gal`} />
+          <SummaryPill label="Computado" value={`${resultJustified} gal`} />
+        </Stack>
+      }
     >
-      <Card sx={{ width: "25%", padding: 3 }}>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Typography variant="h6">LIQUIDACION DE PETROLEO</Typography>
+      <Stack
+        direction={{ xs: "column", lg: "row" }}
+        spacing={2}
+        sx={{ mt: 2.25 }}
+      >
+        <Box
+          sx={{
+            flex: 1.2,
+            p: 2.2,
+            borderRadius: 3,
+            backgroundColor: "rgba(15, 124, 120, 0.08)",
+            display: "grid",
+            gap: 1.2,
+          }}
+        >
+          <MetricRow label="Petroleo real usado" value={`${resultControlled} gal`} />
+          <MetricRow label="Petroleo computado" value={`${resultJustified} gal`} />
+          <MetricRow label="Petroleo extra" value={`${resultUsed} gal`} />
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-          <Typography variant="body1">PETROLEO REAL USADO:</Typography>
-          <Typography variant="body1">{resultControlled}</Typography>
+        <Box
+          sx={{
+            flex: 0.9,
+            p: 2.4,
+            borderRadius: 3,
+            background:
+              result >= 0
+                ? "linear-gradient(180deg, rgba(15, 124, 120, 0.12) 0%, rgba(255,255,255,0.94) 100%)"
+                : "linear-gradient(180deg, rgba(201, 130, 90, 0.16) 0%, rgba(255,255,255,0.94) 100%)",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: 11,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#567170",
+            }}
+          >
+            Diferencia
+          </Typography>
+          <Typography
+            variant="h3"
+            sx={{
+              mt: 1.2,
+              color: result >= 0 ? "#0f7c78" : "#8f4c34",
+              fontWeight: 900,
+              lineHeight: 1,
+            }}
+          >
+            {result} gal
+          </Typography>
+          <Typography sx={{ mt: 1, color: "#4f6a7a" }}>
+            {result >= 0 ? "Exceso controlado" : "Faltante frente a lo esperado"}
+          </Typography>
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-          <Typography variant="body1">PETROLEO COMPUTADO:</Typography>
-          <Typography variant="body1">{resultJustified}</Typography>
-        </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-          <Typography variant="body1">PETROLEO EXTRA:</Typography>
-          <Typography variant="body1">{resultUsed}</Typography>
-        </Box>
-        <Box sx={{ borderBottom: "1px solid", borderColor: "divider", my: 2 }} />
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-          <Typography variant="body1">LIQUIDACION:</Typography>
-          <Typography variant="body1">{result}</Typography>
-        </Box>
-      </Card>
-    </Box>
+      </Stack>
+    </SectionSurface>
   );
 };
+
+const MetricRow = ({ label, value }: { label: string; value: string }) => (
+  <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+    <Typography sx={{ color: "#4f6a7a" }}>{label}</Typography>
+    <Typography sx={{ color: "#16324f", fontWeight: 700 }}>{value}</Typography>
+  </Box>
+);

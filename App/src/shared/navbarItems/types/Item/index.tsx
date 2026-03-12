@@ -16,14 +16,14 @@ export const navbarItems: Item[] = [
     icon: <PhishingIcon />,
   },
   {
-    title: "Control Cajas",
-    url: "/cajas",
-    icon: <InventoryIcon />,
-  },
-  {
     title: "Transporte",
     url: "/transporte",
     icon: <LocalShippingIcon />,
+  },
+  {
+    title: "Control Cajas",
+    url: "/cajas",
+    icon: <InventoryIcon />,
   },
 
   {

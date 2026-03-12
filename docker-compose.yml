@@ -20,10 +20,7 @@ services:
       start_period: 10s
 
   api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
-    image: pesca-api-dev
+    image: node:22-bookworm-slim
     container_name: pesca-api
     restart: unless-stopped
     working_dir: /app
@@ -36,32 +33,24 @@ services:
       PORT: 3000
       NODE_ENV: development
       RUN_DB_SEED: "false"
+      CHOKIDAR_USEPOLLING: "true"
     ports:
       - "3000:3000"
     volumes:
       - ./api:/app
       - api_node_modules:/app/node_modules
     command: >
-      sh -c "if [ ! -x node_modules/.bin/ts-node-dev ]; then npm ci; fi &&
+      sh -c "apt-get update -y &&
+      apt-get install -y openssl &&
+      rm -rf /var/lib/apt/lists/* &&
+      npm install &&
       npx prisma generate &&
       npx prisma migrate deploy &&
       if [ \"$$RUN_DB_SEED\" = \"true\" ]; then npx prisma db seed; fi &&
       npm run dev"
-    develop:
-      watch:
-        - action: rebuild
-          path: ./api/package.json
-        - action: rebuild
-          path: ./api/package-lock.json
-        - action: rebuild
-          path: ./docker-compose.yml
-
 
   app:
-    build:
-      context: ./App
-      dockerfile: Dockerfile
-    image: pesca-app-dev
+    image: node:22-alpine
     container_name: pesca-app
     restart: unless-stopped
     working_dir: /app
@@ -69,24 +58,17 @@ services:
       - api
     environment:
       VITE_BACKEND_URL: http://localhost:3000
-      CHOKIDAR_USEPOLLING: "${APP_CHOKIDAR_USEPOLLING:-false}"
-      CHOKIDAR_INTERVAL: "${APP_CHOKIDAR_INTERVAL:-2500}"
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
     ports:
       - "5173:5173"
     volumes:
       - ./App:/app
       - app_node_modules:/app/node_modules
     command: >
-      sh -c "if [ ! -x node_modules/.bin/vite ]; then npm ci; fi &&
+      sh -c "npm install &&
       npm run dev -- --host 0.0.0.0 --port 5173"
-    develop:
-      watch:
-        - action: rebuild
-          path: ./App/package.json
-        - action: rebuild
-          path: ./App/package-lock.json
-        - action: rebuild
-          path: ./docker-compose.yml
 
 volumes:
   api_node_modules:

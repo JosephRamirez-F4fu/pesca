@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, alpha, Stack } from "@mui/material";
 import { useRouteDetail } from "../../context/vehicle_route_detail";
 import { useVehicleRoute } from "../../context/vehicle-route";
 import { useVehicle } from "../../context/transportist";
@@ -29,14 +29,42 @@ export const ControlTransportDetail = () => {
   }
 
   return (
-    <Box>
-      <DetailHeader
-        routeSelected={routeSelected}
-        vehicle={vehicle}
-        routeDetail={routeDetail}
-      />
-      <ControlTransportDetailLiquidationSection />
-      <ControlTransportDetailOilSection />
+    <Box
+      sx={{
+        px: { xs: 1.5, sm: 2.5, md: 4, lg: 5 },
+        py: { xs: 2, sm: 2.5, md: 4 },
+        minHeight: "100%",
+        background:
+          "radial-gradient(circle at top right, rgba(198, 164, 104, 0.2) 0, rgba(198, 164, 104, 0) 26%), linear-gradient(180deg, #f7f2e9 0%, #f1ebdf 48%, #f8f5ef 100%)",
+      }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: { xs: "100%", lg: 1180, xl: 1240 },
+          mx: "auto",
+        }}
+      >
+        <Stack
+          spacing={3}
+          sx={{
+            "& .MuiCard-root": {
+              borderRadius: 3.5,
+              border: "1px solid",
+              borderColor: alpha("#0f3d3e", 0.08),
+              boxShadow: "0 18px 50px rgba(10, 33, 34, 0.06)",
+            },
+          }}
+        >
+          <DetailHeader
+            routeSelected={routeSelected}
+            vehicle={vehicle}
+            routeDetail={routeDetail}
+          />
+          <ControlTransportDetailLiquidationSection />
+          <ControlTransportDetailOilSection />
+        </Stack>
+      </Box>
     </Box>
   );
 };

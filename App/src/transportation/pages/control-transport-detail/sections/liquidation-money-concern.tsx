@@ -3,7 +3,8 @@ import {
   Autocomplete,
   Box,
   Button,
-  Card,
+  Chip,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -20,6 +21,15 @@ import {
 } from "../../../dto/vehicle_route_money";
 import { CrudModalCard } from "../../../../shared/components/crud-modal-card";
 import { useCrudDialog } from "../../../../shared/hooks/useCrudDialog";
+import {
+  ActionButton,
+  DangerButton,
+  fieldSx,
+  primaryButtonSx,
+  SectionSurface,
+  SummaryPill,
+  tableWrapSx,
+} from "./detail-surface";
 
 export const LiquidationMoneyConcern = () => {
   const { routeSelected } = useVehicleRoute();
@@ -75,18 +85,26 @@ export const LiquidationMoneyConcern = () => {
   };
 
   return (
-    <Box>
-      <Card sx={{ padding: 2, boxShadow: 3, borderRadius: 2, m: 2 }}>
-        <Typography variant="h6">Dinero Dado</Typography>
-        <Button variant="contained" onClick={() => openCreate()}>
-          Añadir
-        </Button>
+    <SectionSurface
+      eyebrow="Flujo entregado"
+      title="Dinero dado"
+      subtitle="Mantiene visibles las entregas de salida y retorno sin sobrecargar la lectura principal."
+      action={
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+          <SummaryPill label="Movimientos" value={String(routesMoney.length)} />
+          <Button sx={primaryButtonSx} onClick={() => openCreate()}>
+            Anadir
+          </Button>
+        </Stack>
+      }
+    >
+      <Box sx={tableWrapSx}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Descripción</TableCell>
+              <TableCell>Descripcion</TableCell>
               <TableCell>Monto</TableCell>
-              <TableCell>Entregado Por</TableCell>
+              <TableCell>Entregado por</TableCell>
               <TableCell>Tipo</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
@@ -94,33 +112,49 @@ export const LiquidationMoneyConcern = () => {
           <TableBody>
             {routesMoney.map((currentMoney) => (
               <TableRow key={currentMoney.id}>
-                <TableCell>{currentMoney.description}</TableCell>
-                <TableCell>{currentMoney.money}</TableCell>
-                <TableCell>{currentMoney.givenby}</TableCell>
-                <TableCell>{currentMoney.type}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleEdit(currentMoney)}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => void deleteRouteMoney(currentMoney.id)}
-                  >
-                    Eliminar
-                  </Button>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    {currentMoney.description}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    S/ {currentMoney.money.toFixed(2)}
+                  </Typography>
+                </TableCell>
+                <TableCell>{currentMoney.givenby}</TableCell>
+                <TableCell>
+                  <Chip
+                    label={currentMoney.type}
+                    sx={{
+                      borderRadius: 999,
+                      backgroundColor: "rgba(15, 124, 120, 0.08)",
+                      color: "#0f3d3e",
+                      fontWeight: 700,
+                    }}
+                  />
+                </TableCell>
+                <TableCell sx={{ width: 1, minWidth: 128 }}>
+                  <Stack spacing={1}>
+                    <ActionButton fullWidth onClick={() => handleEdit(currentMoney)}>
+                      Editar
+                    </ActionButton>
+                    <DangerButton
+                      fullWidth
+                      onClick={() => void deleteRouteMoney(currentMoney.id)}
+                    >
+                      Eliminar
+                    </DangerButton>
+                  </Stack>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </Card>
+      </Box>
       <CrudModalCard
         open={open}
-        title={editMode ? "Editar Dinero Dado" : "Añadir Dinero Dado"}
+        title={editMode ? "Editar Dinero Dado" : "Anadir Dinero Dado"}
         submitLabel={editMode ? "Actualizar" : "Guardar"}
         onClose={() => closeDialog(handleClose)}
         onSubmit={() => void handleSubmit()}
@@ -135,7 +169,8 @@ export const LiquidationMoneyConcern = () => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Descripción"
+              label="Descripcion"
+              sx={fieldSx}
               required
               onChange={(event) =>
                 setMoney({
@@ -154,7 +189,8 @@ export const LiquidationMoneyConcern = () => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Entregado Por"
+              label="Entregado por"
+              sx={fieldSx}
               required
               onChange={(event) =>
                 setMoney({
@@ -168,6 +204,7 @@ export const LiquidationMoneyConcern = () => {
         <TextField
           label="Monto"
           type="number"
+          sx={fieldSx}
           value={money.money}
           onChange={(event) =>
             setMoney({ ...money, money: Number(event.target.value) || 0 })
@@ -183,6 +220,7 @@ export const LiquidationMoneyConcern = () => {
             <TextField
               {...params}
               label="Tipo"
+              sx={fieldSx}
               required
               onChange={(event) =>
                 setMoney({
@@ -194,6 +232,6 @@ export const LiquidationMoneyConcern = () => {
           )}
         />
       </CrudModalCard>
-    </Box>
+    </SectionSurface>
   );
 };

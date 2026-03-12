@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Box, Card, Typography } from "@mui/material";
+import { alpha, Box, Stack, Typography } from "@mui/material";
 import { useRouteDetail } from "../../../context/vehicle_route_detail";
 import { useRouteBalance } from "../../../context/vehicle_route_balance";
 import { useRoutesOtherCost } from "../../../context/other-cost";
 import { useVehicleRouteMoney } from "../../../context/vehicle_route_money";
 import { useVehicleRoute } from "../../../context/vehicle-route";
 import { toCurrency } from "../utils";
+import { SectionSurface, SummaryPill } from "./detail-surface";
 
 export const LiquidationResult = () => {
   const { routeSelected } = useVehicleRoute();
@@ -39,67 +40,95 @@ export const LiquidationResult = () => {
   }, [routeDetail, vehicleRouteBalance, costs, routesMoney, routeSelected]);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        bgcolor: "primary.main",
-      }}
+    <SectionSurface
+      eyebrow="Cierre"
+      title="Liquidacion de gastos"
+      subtitle="Resume entradas, salidas y saldo final en una sola lectura sin depender del formulario."
+      action={
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+          <SummaryPill label="Peajes" value={toCurrency(totalTaxes)} />
+          <SummaryPill label="Dinero dado" value={toCurrency(totalMoney)} />
+        </Stack>
+      }
     >
-      <Box
-        sx={{
-          padding: 2,
-          marginTop: 2,
-          display: "flex",
-          justifyContent: "center",
-          minWidth: "80%",
-          maxWidth: "100%",
-        }}
+      <Stack
+        direction={{ xs: "column", lg: "row" }}
+        spacing={2}
+        sx={{ mt: 2.25 }}
       >
-        <Card sx={{ padding: 3, boxShadow: 3, borderRadius: 2, width: "50%" }}>
+        <Box
+          sx={{
+            flex: 1.2,
+            p: 2.2,
+            borderRadius: 3,
+            backgroundColor: alpha("#0f7c78", 0.08),
+          }}
+        >
+          <Stack spacing={1.35}>
+            <Row label="Gastos balanza" value={toCurrency(totalBalance)} />
+            <Row label="Otros gastos" value={toCurrency(totalCost)} />
+            <Row label="Gastos peajes" value={toCurrency(totalTaxes)} />
+            <Row label="Dinero dado" value={toCurrency(totalMoney)} />
+          </Stack>
+        </Box>
+        <Box
+          sx={{
+            flex: 0.9,
+            p: 2.4,
+            borderRadius: 3,
+            background:
+              result >= 0
+                ? "linear-gradient(180deg, rgba(15, 124, 120, 0.12) 0%, rgba(255,255,255,0.94) 100%)"
+                : "linear-gradient(180deg, rgba(201, 130, 90, 0.16) 0%, rgba(255,255,255,0.94) 100%)",
+            border: "1px solid",
+            borderColor:
+              result >= 0 ? alpha("#0f7c78", 0.12) : alpha("#c9825a", 0.16),
+          }}
+        >
           <Typography
-            variant="h6"
-            sx={{ marginBottom: 2, textAlign: "center" }}
+            sx={{
+              fontSize: 11,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#567170",
+            }}
           >
-            LIQUIDACION DE GASTOS
+            Estado final
           </Typography>
-          <Row label="Gastos Balanza:" value={toCurrency(totalBalance)} />
-          <Row label="Otros Gastos:" value={toCurrency(totalCost)} />
-          <Row label="Gastos Peajes:" value={toCurrency(totalTaxes)} />
-          <Row label="Dinero Dado:" value={toCurrency(totalMoney)} />
-          <Box sx={{ borderBottom: "1px solid", borderColor: "divider", my: 2 }} />
           {isChangeGiven ? (
-            <Typography variant="body1">Vuelto Entregado</Typography>
+            <Typography
+              variant="h5"
+              sx={{ mt: 1.4, color: "#16324f", fontWeight: 800 }}
+            >
+              Vuelto entregado
+            </Typography>
           ) : (
-            <Row
-              label="Saldo:"
-              value={
-                result >= 0
-                  ? `A devolver: ${toCurrency(result)}`
-                  : `A pagar: ${toCurrency(result)}`
-              }
-              valueColor={result >= 0 ? "green" : "red"}
-            />
+            <>
+              <Typography
+                variant="h3"
+                sx={{
+                  mt: 1.2,
+                  color: result >= 0 ? "#0f7c78" : "#8f4c34",
+                  fontWeight: 900,
+                  lineHeight: 1,
+                }}
+              >
+                {toCurrency(Math.abs(result))}
+              </Typography>
+              <Typography sx={{ mt: 1, color: "#4f6a7a" }}>
+                {result >= 0 ? "Monto a devolver" : "Monto a pagar"}
+              </Typography>
+            </>
           )}
-        </Card>
-      </Box>
-    </Box>
+        </Box>
+      </Stack>
+    </SectionSurface>
   );
 };
 
-const Row = ({
-  label,
-  value,
-  valueColor,
-}: {
-  label: string;
-  value: string;
-  valueColor?: string;
-}) => (
-  <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-    <Typography variant="body1">{label}</Typography>
-    <Typography variant="body1" sx={valueColor ? { color: valueColor } : {}}>
-      {value}
-    </Typography>
+const Row = ({ label, value }: { label: string; value: string }) => (
+  <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+    <Typography sx={{ color: "#4f6a7a" }}>{label}</Typography>
+    <Typography sx={{ color: "#16324f", fontWeight: 700 }}>{value}</Typography>
   </Box>
 );

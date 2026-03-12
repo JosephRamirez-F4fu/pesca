@@ -3,7 +3,7 @@ import {
   Autocomplete,
   Box,
   Button,
-  Card,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -20,6 +20,15 @@ import {
 } from "../../../dto/other-cost";
 import { CrudModalCard } from "../../../../shared/components/crud-modal-card";
 import { useCrudDialog } from "../../../../shared/hooks/useCrudDialog";
+import {
+  ActionButton,
+  DangerButton,
+  fieldSx,
+  primaryButtonSx,
+  SectionSurface,
+  SummaryPill,
+  tableWrapSx,
+} from "./detail-surface";
 
 export const LiquidationOtherCost = () => {
   const { routeSelected } = useVehicleRoute();
@@ -70,16 +79,24 @@ export const LiquidationOtherCost = () => {
   };
 
   return (
-    <Box>
-      <Card sx={{ padding: 2, boxShadow: 3, borderRadius: 2, m: 2 }}>
-        <Typography variant="h6">Otros Gastos</Typography>
-        <Button variant="contained" onClick={() => openCreate()}>
-          Añadir
-        </Button>
+    <SectionSurface
+      eyebrow="Gastos auxiliares"
+      title="Otros gastos"
+      subtitle="Deja separados los costos extraordinarios para que el cierre muestre con claridad que se desvia del recorrido."
+      action={
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+          <SummaryPill label="Items" value={String(otherCosts.length)} />
+          <Button sx={primaryButtonSx} onClick={() => openCreate()}>
+            Anadir
+          </Button>
+        </Stack>
+      }
+    >
+      <Box sx={tableWrapSx}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Descripción</TableCell>
+              <TableCell>Descripcion</TableCell>
               <TableCell>Precio</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
@@ -87,31 +104,30 @@ export const LiquidationOtherCost = () => {
           <TableBody>
             {otherCosts.map((currentCost) => (
               <TableRow key={currentCost.id}>
-                <TableCell>{currentCost.description}</TableCell>
-                <TableCell>{currentCost.price}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleEdit(currentCost)}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => void deleteCost(currentCost.id)}
-                  >
-                    Eliminar
-                  </Button>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    {currentCost.description}
+                  </Typography>
+                </TableCell>
+                <TableCell>S/ {currentCost.price.toFixed(2)}</TableCell>
+                <TableCell sx={{ width: 1, minWidth: 128 }}>
+                  <Stack spacing={1}>
+                    <ActionButton fullWidth onClick={() => handleEdit(currentCost)}>
+                      Editar
+                    </ActionButton>
+                    <DangerButton fullWidth onClick={() => void deleteCost(currentCost.id)}>
+                      Eliminar
+                    </DangerButton>
+                  </Stack>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </Card>
+      </Box>
       <CrudModalCard
         open={open}
-        title={editMode ? "Editar Otro Gasto" : "Añadir Otro Gasto"}
+        title={editMode ? "Editar Otro Gasto" : "Anadir Otro Gasto"}
         submitLabel={editMode ? "Actualizar" : "Guardar"}
         onClose={() => closeDialog(handleClose)}
         onSubmit={() => void handleSubmit()}
@@ -124,7 +140,8 @@ export const LiquidationOtherCost = () => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Descripción"
+              label="Descripcion"
+              sx={fieldSx}
               required
               onChange={(event) =>
                 setCost({
@@ -138,6 +155,7 @@ export const LiquidationOtherCost = () => {
         <TextField
           label="Precio"
           type="number"
+          sx={fieldSx}
           value={cost.price}
           onChange={(event) =>
             setCost({ ...cost, price: Number(event.target.value) || 0 })
@@ -145,6 +163,6 @@ export const LiquidationOtherCost = () => {
           required
         />
       </CrudModalCard>
-    </Box>
+    </SectionSurface>
   );
 };

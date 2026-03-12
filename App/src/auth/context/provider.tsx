@@ -17,10 +17,9 @@ export const AuthProvider = ({ children }: ContextProviderProps) => {
 
   useEffect(() => {
     const bootstrapSession = async () => {
-      const accessToken = authTokenStorage.getAccessToken();
       const refreshToken = authTokenStorage.getRefreshToken();
 
-      if (!accessToken || !refreshToken) {
+      if (!refreshToken) {
         setUserSession(null);
         setIsAuthenticated(false);
         setIsLoading(false);
