@@ -1,0 +1,93 @@
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: pesca-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pesca
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pesca"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    image: pesca-api-dev
+    container_name: pesca-api
+    restart: unless-stopped
+    working_dir: /app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/pesca
+      SECRET_JWT: M2F7fCXeGxeqjq8F91XD5oXeM8VJ4cXRgfB0labHXrw7DhHvwW
+      PORT: 3000
+      NODE_ENV: development
+      RUN_DB_SEED: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api:/app
+      - api_node_modules:/app/node_modules
+    command: >
+      sh -c "if [ ! -x node_modules/.bin/ts-node-dev ]; then npm ci; fi &&
+      npx prisma generate &&
+      npx prisma migrate deploy &&
+      if [ \"$$RUN_DB_SEED\" = \"true\" ]; then npx prisma db seed; fi &&
+      npm run dev"
+    develop:
+      watch:
+        - action: rebuild
+          path: ./api/package.json
+        - action: rebuild
+          path: ./api/package-lock.json
+        - action: rebuild
+          path: ./docker-compose.yml
+
+
+  app:
+    build:
+      context: ./App
+      dockerfile: Dockerfile
+    image: pesca-app-dev
+    container_name: pesca-app
+    restart: unless-stopped
+    working_dir: /app
+    depends_on:
+      - api
+    environment:
+      VITE_BACKEND_URL: http://localhost:3000
+      CHOKIDAR_USEPOLLING: "${APP_CHOKIDAR_USEPOLLING:-false}"
+      CHOKIDAR_INTERVAL: "${APP_CHOKIDAR_INTERVAL:-2500}"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./App:/app
+      - app_node_modules:/app/node_modules
+    command: >
+      sh -c "if [ ! -x node_modules/.bin/vite ]; then npm ci; fi &&
+      npm run dev -- --host 0.0.0.0 --port 5173"
+    develop:
+      watch:
+        - action: rebuild
+          path: ./App/package.json
+        - action: rebuild
+          path: ./App/package-lock.json
+        - action: rebuild
+          path: ./docker-compose.yml
+
+volumes:
+  api_node_modules:
+  app_node_modules:
