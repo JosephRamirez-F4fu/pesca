@@ -16,32 +16,16 @@ export class UserController {
       token: access_token,
       refreshToken,
     } = await this.sessionUseCase.execute(req.body);
-    try {
-      res.status(200).json({
-        ...user,
-        accessToken: access_token,
-        refreshToken,
-      });
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: "Internal server error" });
-      }
-    }
+    res.status(200).json({
+      ...user,
+      accessToken: access_token,
+      refreshToken,
+    });
+    return;
   };
   register = async (req: Request, res: Response) => {
-    try {
-      const user = await this.registerUseCase.execute(req.body);
-      res.json(user);
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: "Internal server error" });
-      }
-    }
+    const user = await this.registerUseCase.execute(req.body);
+    res.json(user);
   };
 
   session = async (req: Request, res: Response) => {

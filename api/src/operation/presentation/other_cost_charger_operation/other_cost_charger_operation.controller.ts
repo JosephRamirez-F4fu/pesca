@@ -1,4 +1,7 @@
 import { Request, Response } from "express";
+import { getValidated } from "../../../shared/presentation/types/validated-request";
+import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
+import type { OtherCostChargerOperationBody } from "../operation.schemas";
 
 import {
   CreateOtherCostChargerOperationUseCase,
@@ -25,7 +28,10 @@ export class OtherCostChargerOperationController {
     new UpdateOtherCostChargerOperationUseCase();
 
   create = async (req: Request, res: Response) => {
-    const otherCostChargerOperation = req.body;
+    const { body: otherCostChargerOperation } = getValidated<
+      Record<string, never>,
+      OtherCostChargerOperationBody
+    >(req);
     const newOtherCostChargerOperation =
       await this.createOtherCostChargerOperationUseCase.execute(
         otherCostChargerOperation
@@ -35,7 +41,8 @@ export class OtherCostChargerOperationController {
   };
 
   delete = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
     await this.deleteOtherCostChargerOperationUseCase.execute(id);
     res.status(204).send();
     return;
@@ -49,7 +56,8 @@ export class OtherCostChargerOperationController {
   };
 
   getById = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
     const otherCostChargerOperation =
       await this.getByIdOtherCostChargerOperationUseCase.execute(id);
     res.status(200).json(otherCostChargerOperation);
@@ -57,8 +65,11 @@ export class OtherCostChargerOperationController {
   };
 
   update = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
-    const otherCostChargerOperation = req.body;
+    const { params, body: otherCostChargerOperation } = getValidated<
+      IdParams,
+      OtherCostChargerOperationBody
+    >(req);
+    const { id } = params;
     await this.updateOtherCostChargerOperationUseCase.execute(
       id,
       otherCostChargerOperation

@@ -1,4 +1,7 @@
 import { Response, Request } from "express";
+import { getValidated } from "../../../shared/presentation/types/validated-request";
+import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
+import type { RouteBody } from "../transportation.schemas";
 
 import {
   CreateRouteUseCase,
@@ -16,87 +19,39 @@ export class RouteController {
   private updateRouteUseCase = new UpdateRouteUseCase();
 
   create = async (req: Request, res: Response) => {
-    try {
-      const route = req.body;
-      const newRoute = await this.createRouteUseCase.execute(route);
-      res.status(201).json(newRoute);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        console.log(error);
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { body: route } = getValidated<Record<string, never>, RouteBody>(req);
+    const newRoute = await this.createRouteUseCase.execute(route);
+    res.status(201).json(newRoute);
+    return;
   };
 
   update = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const route = req.body;
-      await this.updateRouteUseCase.execute(id, route);
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        console.log(error);
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params, body: route } = getValidated<IdParams, RouteBody>(req);
+    const { id } = params;
+    await this.updateRouteUseCase.execute(id, route);
+    res.status(204).send();
+    return;
   };
 
   delete = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      await this.deleteRouteUseCase.execute(id);
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        console.log(error);
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    await this.deleteRouteUseCase.execute(id);
+    res.status(204).send();
+    return;
   };
 
   getById = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const route = await this.findByIdRouteUseCase.execute(id);
-      res.status(200).json(route);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        console.log(error);
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    const route = await this.findByIdRouteUseCase.execute(id);
+    res.status(200).json(route);
+    return;
   };
 
   getAll = async (req: Request, res: Response) => {
-    try {
-      const route = await this.getAllRouteUseCase.execute();
-      res.status(200).json(route);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        console.log(error);
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const route = await this.getAllRouteUseCase.execute();
+    res.status(200).json(route);
+    return;
   };
 }

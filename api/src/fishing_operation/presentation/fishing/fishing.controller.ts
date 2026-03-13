@@ -1,4 +1,7 @@
 import { Request, Response } from "express";
+import { getValidated } from "../../../shared/presentation/types/validated-request";
+import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
+import type { FishingBody } from "../fishing_operation.schemas";
 import {
   CreateFishingUseCase,
   DeleteFishingUseCase,
@@ -17,92 +20,49 @@ export class FishingController {
   private getByTravelIdUseCase = new GetFishingByTravelIdUseCase();
 
   create = async (req: Request, res: Response) => {
-    try {
-      const fishing = req.body;
-      const newFishing = await this.createFishingUseCase.execute(fishing);
-      res.status(201).json(newFishing);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const { body: fishing } = getValidated<Record<string, never>, FishingBody>(
+      req
+    );
+    const newFishing = await this.createFishingUseCase.execute(fishing);
+    res.status(201).json(newFishing);
+    return;
   };
 
   delete = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      await this.deleteFishingUseCase.execute(id);
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    await this.deleteFishingUseCase.execute(id);
+    res.status(204).send();
+    return;
   };
 
   getAll = async (req: Request, res: Response) => {
-    try {
-      const fishing = await this.getAllFishingUseCase.execute();
-      res.status(200).json(fishing);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const fishing = await this.getAllFishingUseCase.execute();
+    res.status(200).json(fishing);
+    return;
   };
 
   getById = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const fishing = await this.getByIdFishingUseCase.execute(id);
-      res.status(200).json(fishing);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    const fishing = await this.getByIdFishingUseCase.execute(id);
+    res.status(200).json(fishing);
+    return;
   };
 
   update = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const fishing = req.body;
-      await this.updateFishingUseCase.execute(id, fishing);
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const { params, body: fishing } = getValidated<IdParams, FishingBody>(req);
+    const { id } = params;
+    await this.updateFishingUseCase.execute(id, fishing);
+    res.status(204).send();
+    return;
   };
 
   getByTravelId = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const fishing = await this.getByTravelIdUseCase.execute(id);
-      res.status(200).json(fishing);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    const fishing = await this.getByTravelIdUseCase.execute(id);
+    res.status(200).json(fishing);
+    return;
   };
 }

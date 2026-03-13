@@ -33,7 +33,7 @@ export class ControlPlaceRepository {
     return controlPlace;
   }
 
-  async update(id: number, data: ControlPlaceResDto): Promise<ControlPlaceDto> {
+  async update(id: number, data: ControlPlaceDto): Promise<ControlPlaceDto> {
     const controlPlace = await db.control_place.update({
       where: {
         id,

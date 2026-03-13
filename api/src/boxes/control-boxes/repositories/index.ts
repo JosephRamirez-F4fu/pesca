@@ -42,7 +42,7 @@ export class ControlBoxesRepository {
     return controlBoxes;
   }
 
-  async update(id: number, data: ControlBoxesResDto) {
+  async update(id: number, data: ControlBoxesDto) {
     const controlBoxes = await db.control_boxes.update({
       where: {
         id,

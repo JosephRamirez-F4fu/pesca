@@ -20,9 +20,12 @@ services:
       start_period: 10s
 
   api:
-    image: node:22-bookworm-slim
+    build:
+      context: ./api
+    image: pesca-api-dev
     container_name: pesca-api
     restart: unless-stopped
+    init: true
     working_dir: /app
     depends_on:
       db:
@@ -33,21 +36,14 @@ services:
       PORT: 3000
       NODE_ENV: development
       RUN_DB_SEED: "false"
-      CHOKIDAR_USEPOLLING: "true"
+      RUN_DB_MIGRATIONS: "true"
+      CHOKIDAR_USEPOLLING: "false"
     ports:
       - "3000:3000"
     volumes:
       - ./api:/app
       - api_node_modules:/app/node_modules
-    command: >
-      sh -c "apt-get update -y &&
-      apt-get install -y openssl &&
-      rm -rf /var/lib/apt/lists/* &&
-      npm install &&
-      npx prisma generate &&
-      npx prisma migrate deploy &&
-      if [ \"$$RUN_DB_SEED\" = \"true\" ]; then npx prisma db seed; fi &&
-      npm run dev"
+    command: ["/usr/local/bin/dev-entrypoint.sh"]
 
   app:
     image: node:22-alpine

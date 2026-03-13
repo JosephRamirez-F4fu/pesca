@@ -1,101 +1,52 @@
 import { BoxesRepository } from "../repositories";
 import { Request, Response } from "express";
+import { getValidated } from "../../../shared/presentation/types/validated-request";
+import type { BoxesBody, IdParams } from "../../presentation/boxes.schemas";
 
 export class BoxesController {
   private repository = new BoxesRepository();
   create = async (req: Request, res: Response) => {
-    try {
-      const boxes = req.body;
-      const newBoxes = await this.repository.create(boxes);
-      res.status(201).json(newBoxes);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { body: boxes } = getValidated<Record<string, never>, BoxesBody>(req);
+    const newBoxes = await this.repository.create(boxes);
+    res.status(201).json(newBoxes);
+    return;
   };
 
   update = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const boxes = req.body;
-      await this.repository.update(id, boxes);
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params, body: boxes } = getValidated<IdParams, BoxesBody>(req);
+    const { id } = params;
+    await this.repository.update(id, boxes);
+    res.status(204).send();
+    return;
   };
 
   delete = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      await this.repository.delete(id);
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    await this.repository.delete(id);
+    res.status(204).send();
+    return;
   };
 
-  getAll = async (req: Request, res: Response) => {
-    try {
-      const boxes = await this.repository.findAll();
-      res.status(200).json(boxes);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+  getAll = async (_req: Request, res: Response) => {
+    const boxes = await this.repository.findAll();
+    res.status(200).json(boxes);
+    return;
   };
 
   getById = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const boxes = await this.repository.findById(id);
-      res.status(200).json(boxes);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    const boxes = await this.repository.findById(id);
+    res.status(200).json(boxes);
+    return;
   };
 
   getByControlPlace = async (req: Request, res: Response) => {
-    try {
-      const id_control_place = Number(req.params.id);
-      const boxes = await this.repository.findByControlPlace(id_control_place);
-      res.status(200).json(boxes);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id: id_control_place } = params;
+    const boxes = await this.repository.findByControlPlace(id_control_place);
+    res.status(200).json(boxes);
+    return;
   };
 }

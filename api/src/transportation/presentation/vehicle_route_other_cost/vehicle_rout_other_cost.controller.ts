@@ -1,4 +1,7 @@
 import { Response, Request } from "express";
+import { getValidated } from "../../../shared/presentation/types/validated-request";
+import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
+import type { VehicleRouteOtherCostBody } from "../transportation.schemas";
 
 import {
   CreateVehicleRouteOtherCostUseCase,
@@ -24,108 +27,63 @@ export class VehicleRouteOtherCostController {
   private getByVehicleRouteUseCase = new GetByVehicleRouteUseCase();
 
   create = async (req: Request, res: Response) => {
-    try {
-      const vehicleRouteOtherCost = req.body;
-      const newVehicleRouteOtherCost =
-        await this.createVehicleRouteOtherCostUseCase.execute(
-          vehicleRouteOtherCost
-        );
-      res.status(201).json(newVehicleRouteOtherCost);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        console.log(error);
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const { body: vehicleRouteOtherCost } = getValidated<
+      Record<string, never>,
+      VehicleRouteOtherCostBody
+    >(req);
+    const newVehicleRouteOtherCost =
+      await this.createVehicleRouteOtherCostUseCase.execute(
+        vehicleRouteOtherCost
+      );
+    res.status(201).json(newVehicleRouteOtherCost);
+    return;
   };
 
   update = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const vehicleRouteOtherCost = req.body;
-      await this.updateVehicleRouteOtherCostUseCase.execute(
-        id,
-        vehicleRouteOtherCost
-      );
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        console.log(error);
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const { params, body: vehicleRouteOtherCost } = getValidated<
+      IdParams,
+      VehicleRouteOtherCostBody
+    >(req);
+    const { id } = params;
+    await this.updateVehicleRouteOtherCostUseCase.execute(
+      id,
+      vehicleRouteOtherCost
+    );
+    res.status(204).send();
+    return;
   };
 
   delete = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      await this.deleteVehicleRouteOtherCostUseCase.execute(id);
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        console.log(error);
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    await this.deleteVehicleRouteOtherCostUseCase.execute(id);
+    res.status(204).send();
+    return;
   };
 
   getById = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const vehicleRouteOtherCost =
-        await this.findByIdVehicleRouteOtherCostUseCase.execute(id);
-      res.status(200).json(vehicleRouteOtherCost);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        console.log(error);
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    const vehicleRouteOtherCost =
+      await this.findByIdVehicleRouteOtherCostUseCase.execute(id);
+    res.status(200).json(vehicleRouteOtherCost);
+    return;
   };
 
   getAll = async (req: Request, res: Response) => {
-    try {
-      const vehicleRouteOtherCost =
-        await this.getAllVehicleRouteOtherCostUseCase.execute();
-      res.status(200).json(vehicleRouteOtherCost);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        console.log(error);
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const vehicleRouteOtherCost =
+      await this.getAllVehicleRouteOtherCostUseCase.execute();
+    res.status(200).json(vehicleRouteOtherCost);
+    return;
   };
 
   getByVehicleRoute = async (req: Request, res: Response) => {
-    try {
-      const vehicleRouteId = Number(req.params.id);
-      const vehicleRouteOtherCost = await this.getByVehicleRouteUseCase.execute(
-        vehicleRouteId
-      );
-      res.status(200).json(vehicleRouteOtherCost);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        console.log(error);
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id: vehicleRouteId } = params;
+    const vehicleRouteOtherCost = await this.getByVehicleRouteUseCase.execute(
+      vehicleRouteId
+    );
+    res.status(200).json(vehicleRouteOtherCost);
+    return;
   };
 }

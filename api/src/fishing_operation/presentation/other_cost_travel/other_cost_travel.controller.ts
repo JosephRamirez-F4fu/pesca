@@ -7,6 +7,9 @@ import {
   GetOtherCostTravelByTravelIdUseCase,
 } from "../../domain/usecases/other_cost_travel";
 import { Request, Response } from "express";
+import { getValidated } from "../../../shared/presentation/types/validated-request";
+import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
+import type { OtherCostTravelBody } from "../fishing_operation.schemas";
 
 export class OtherCostTravelController {
   private createOtherCostTravelUseCase = new CreateOtherCostTravelUseCase();
@@ -17,101 +20,56 @@ export class OtherCostTravelController {
   private getByTravelIdUseCase = new GetOtherCostTravelByTravelIdUseCase();
 
   create = async (req: Request, res: Response) => {
-    try {
-      const otherCostTravel = req.body;
-      const newOtherCostTravel =
-        await this.createOtherCostTravelUseCase.execute(otherCostTravel);
-      res.status(201).json(newOtherCostTravel);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { body: otherCostTravel } = getValidated<
+      Record<string, never>,
+      OtherCostTravelBody
+    >(req);
+    const newOtherCostTravel =
+      await this.createOtherCostTravelUseCase.execute(otherCostTravel);
+    res.status(201).json(newOtherCostTravel);
+    return;
   };
 
   delete = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      await this.deleteOtherCostTravelUseCase.execute(id);
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    await this.deleteOtherCostTravelUseCase.execute(id);
+    res.status(204).send();
+    return;
   };
 
   getAll = async (req: Request, res: Response) => {
-    try {
-      const otherCostTravel = await this.getAllOtherCostTravelUseCase.execute();
-      res.status(200).json(otherCostTravel);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const otherCostTravel = await this.getAllOtherCostTravelUseCase.execute();
+    res.status(200).json(otherCostTravel);
+    return;
   };
 
   getById = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const otherCostTravel = await this.getByIdOtherCostTravelUseCase.execute(
-        id
-      );
-      res.status(200).json(otherCostTravel);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    const otherCostTravel = await this.getByIdOtherCostTravelUseCase.execute(
+      id
+    );
+    res.status(200).json(otherCostTravel);
+    return;
   };
 
   update = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const otherCostTravel = req.body;
-      await this.updateOtherCostTravelUseCase.execute(id, otherCostTravel);
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params, body: otherCostTravel } = getValidated<
+      IdParams,
+      OtherCostTravelBody
+    >(req);
+    const { id } = params;
+    await this.updateOtherCostTravelUseCase.execute(id, otherCostTravel);
+    res.status(204).send();
+    return;
   };
 
   getByTravelId = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const otherCostTravel = await this.getByTravelIdUseCase.execute(id);
-      res.status(200).json(otherCostTravel);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    const otherCostTravel = await this.getByTravelIdUseCase.execute(id);
+    res.status(200).json(otherCostTravel);
+    return;
   };
 }

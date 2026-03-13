@@ -1,4 +1,10 @@
 import { Response, Request } from "express";
+import { getValidated } from "../../../shared/presentation/types/validated-request";
+import type {
+  IdParams,
+  IdTravelParams,
+} from "../../../shared/presentation/schemas/common.schemas";
+import type { ChargerOperationBody } from "../operation.schemas";
 import {
   CreateChargerOperationUseCase,
   UpdateChargerOperationUseCase,
@@ -18,103 +24,60 @@ export class ChargerOperationController {
     new FindByChargerOperationTravelIdUseCase();
 
   create = async (req: Request, res: Response) => {
-    try {
-      const chargerOperation = req.body;
-      const newChargerOperation =
-        await this.createChargerOperationUseCase.execute(
-          chargerOperation.id_travel
-        );
-      res.status(201).json(newChargerOperation);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { body: chargerOperation } = getValidated<
+      Record<string, never>,
+      ChargerOperationBody
+    >(req);
+    const newChargerOperation =
+      await this.createChargerOperationUseCase.execute(
+        chargerOperation.id_travel
+      );
+    res.status(201).json(newChargerOperation);
+    return;
   };
 
   update = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const chargerOperation = req.body;
-      await this.updateChargerOperationUseCase.execute(id, chargerOperation);
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params, body: chargerOperation } = getValidated<
+      IdParams,
+      ChargerOperationBody
+    >(req);
+    const { id } = params;
+    await this.updateChargerOperationUseCase.execute(id, chargerOperation);
+    res.status(204).send();
+    return;
   };
 
   delete = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      await this.deleteChargerOperationUseCase.execute(id);
-      res.status(204).send();
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    await this.deleteChargerOperationUseCase.execute(id);
+    res.status(204).send();
+    return;
   };
 
   getById = async (req: Request, res: Response) => {
-    try {
-      const id = Number(req.params.id);
-      const chargerOperation = await this.findByChargerOperationUseCase.execute(
-        id
-      );
-      res.status(200).json(chargerOperation);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
+    const chargerOperation = await this.findByChargerOperationUseCase.execute(
+      id
+    );
+    res.status(200).json(chargerOperation);
+    return;
   };
 
   getAll = async (req: Request, res: Response) => {
-    try {
-      const chargerOperation =
-        await this.getAllChargerOperationUseCase.execute();
-      res.status(200).json(chargerOperation);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-    }
+    const chargerOperation =
+      await this.getAllChargerOperationUseCase.execute();
+    res.status(200).json(chargerOperation);
+    return;
   };
 
   getChargerOperationByTravelId = async (req: Request, res: Response) => {
-    try {
-      const id_travel = Number(req.params.id_travel);
-      const chargerOperation =
-        await this.FindByChargerOperationTravelIdUseCase.execute(id_travel);
-      res.status(200).json(chargerOperation);
-      return;
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-        return;
-      }
-      res.status(400).json({ message: "Unexpected error." });
-      return;
-    }
+    const { params } = getValidated<IdTravelParams>(req);
+    const { id_travel } = params;
+    const chargerOperation =
+      await this.FindByChargerOperationTravelIdUseCase.execute(id_travel);
+    res.status(200).json(chargerOperation);
+    return;
   };
 }

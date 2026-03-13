@@ -1,4 +1,7 @@
 import { Response, Request } from "express";
+import { getValidated } from "../../../shared/presentation/types/validated-request";
+import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
+import type { LoanDetailBody } from "../sales.schemas";
 
 import {
   CreateLoanDetailUseCase,
@@ -16,7 +19,10 @@ export class LoanDetailController {
   private getAllLoanDetailUseCase = new GetAllLoanDetailUseCase();
 
   create = async (req: Request, res: Response) => {
-    const loanDetail = req.body;
+    const { body: loanDetail } = getValidated<
+      Record<string, never>,
+      LoanDetailBody
+    >(req);
     const newLoanDetail = await this.createLoanDetailUseCase.execute(
       loanDetail
     );
@@ -25,22 +31,27 @@ export class LoanDetailController {
   };
 
   update = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
-    const loanDetail = req.body;
+    const { params, body: loanDetail } = getValidated<
+      IdParams,
+      LoanDetailBody
+    >(req);
+    const { id } = params;
     await this.updateLoanDetailUseCase.execute(id, loanDetail);
     res.status(204).send();
     return;
   };
 
   delete = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
     await this.deleteLoanDetailUseCase.execute(id);
     res.status(204).send();
     return;
   };
 
   getById = async (req: Request, res: Response) => {
-    const id = Number(req.params.id);
+    const { params } = getValidated<IdParams>(req);
+    const { id } = params;
     const loanDetail = await this.findByLoanDetailUseCase.execute(id);
     res.status(200).json(loanDetail);
     return;
