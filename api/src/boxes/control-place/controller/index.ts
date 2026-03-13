@@ -4,6 +4,7 @@ import { notFound } from "../../../shared/domain/errors/http.error";
 import { getValidated } from "../../../shared/presentation/types/validated-request";
 import type {
   ControlPlaceBody,
+  ControlPlaceUpdateBody,
   IdParams,
 } from "../../presentation/boxes.schemas";
 export class ControlPlaceController {
@@ -33,7 +34,9 @@ export class ControlPlaceController {
   };
 
   update = async (req: Request, res: Response) => {
-    const { params, body } = getValidated<IdParams, ControlPlaceBody>(req);
+    const { params, body } = getValidated<IdParams, ControlPlaceUpdateBody>(
+      req
+    );
     const { id } = params;
     await this.repository.update(id, body);
     res.status(200).send();

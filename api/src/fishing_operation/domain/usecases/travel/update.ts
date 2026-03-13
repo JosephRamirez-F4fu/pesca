@@ -1,9 +1,9 @@
 import { TravelRepository } from "../../repositories/travel.repository";
-import { TravelCreateDto } from "./../../dtos/travel/create.dto";
+import { TravelUpdateDto } from "./../../dtos/travel/update.dto";
 
 export class UpdateTravelUseCase {
   private travelRepository = new TravelRepository();
-  async execute(id: number, travel: TravelCreateDto) {
+  async execute(id: number, travel: TravelUpdateDto) {
     await this.travelRepository.update(id, travel);
   }
 }

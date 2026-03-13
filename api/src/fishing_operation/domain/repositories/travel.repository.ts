@@ -1,6 +1,7 @@
 import { db } from "../../../core/config/db";
 import { Travel } from "../entities/travel.entity";
 import { TravelCreateDto } from "../dtos/travel/create.dto";
+import { TravelUpdateDto } from "../dtos/travel/update.dto";
 
 export class TravelRepository {
   async create(travel: TravelCreateDto): Promise<Travel> {
@@ -40,7 +41,7 @@ export class TravelRepository {
     return travel;
   }
 
-  async update(id: number, travel: TravelCreateDto): Promise<void> {
+  async update(id: number, travel: TravelUpdateDto): Promise<void> {
     await db.travel.update({
       where: {
         id: id,

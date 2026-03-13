@@ -1,5 +1,9 @@
 import { db } from "../../../core/config/db";
-import { ControlPlaceDto, ControlPlaceResDto } from "../dto";
+import {
+  ControlPlaceDto,
+  ControlPlaceResDto,
+  ControlPlaceUpdateDto,
+} from "../dto";
 
 export class ControlPlaceRepository {
   async create(data: ControlPlaceDto): Promise<ControlPlaceResDto> {
@@ -33,7 +37,10 @@ export class ControlPlaceRepository {
     return controlPlace;
   }
 
-  async update(id: number, data: ControlPlaceDto): Promise<ControlPlaceDto> {
+  async update(
+    id: number,
+    data: ControlPlaceUpdateDto
+  ): Promise<ControlPlaceDto> {
     const controlPlace = await db.control_place.update({
       where: {
         id,

@@ -1,7 +1,11 @@
 import { BoxesRepository } from "../repositories";
 import { Request, Response } from "express";
 import { getValidated } from "../../../shared/presentation/types/validated-request";
-import type { BoxesBody, IdParams } from "../../presentation/boxes.schemas";
+import type {
+  BoxesBody,
+  BoxesUpdateBody,
+  IdParams,
+} from "../../presentation/boxes.schemas";
 
 export class BoxesController {
   private repository = new BoxesRepository();
@@ -13,7 +17,9 @@ export class BoxesController {
   };
 
   update = async (req: Request, res: Response) => {
-    const { params, body: boxes } = getValidated<IdParams, BoxesBody>(req);
+    const { params, body: boxes } = getValidated<IdParams, BoxesUpdateBody>(
+      req
+    );
     const { id } = params;
     await this.repository.update(id, boxes);
     res.status(204).send();

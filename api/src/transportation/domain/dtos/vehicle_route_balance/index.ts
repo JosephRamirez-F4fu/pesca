@@ -1,9 +1,12 @@
-export interface VehicleRouteBalanceDto {
+export interface CreateVehicleRouteBalanceDto {
   balance: number;
   place: string;
-  createdAt: Date;
-  updatedAt: Date;
   id_vehicle_route: number;
+}
+
+export interface UpdateVehicleRouteBalanceDto {
+  balance: number;
+  place: string;
 }
 
 export interface VehicleRouteBalanceResDto {

@@ -4,7 +4,10 @@ import type {
   IdParams,
   IdTravelParams,
 } from "../../../shared/presentation/schemas/common.schemas";
-import type { ChargerOperationBody } from "../operation.schemas";
+import type {
+  ChargerOperationCreateBody,
+  ChargerOperationUpdateBody,
+} from "../operation.schemas";
 import {
   CreateChargerOperationUseCase,
   UpdateChargerOperationUseCase,
@@ -26,7 +29,7 @@ export class ChargerOperationController {
   create = async (req: Request, res: Response) => {
     const { body: chargerOperation } = getValidated<
       Record<string, never>,
-      ChargerOperationBody
+      ChargerOperationCreateBody
     >(req);
     const newChargerOperation =
       await this.createChargerOperationUseCase.execute(
@@ -39,7 +42,7 @@ export class ChargerOperationController {
   update = async (req: Request, res: Response) => {
     const { params, body: chargerOperation } = getValidated<
       IdParams,
-      ChargerOperationBody
+      ChargerOperationUpdateBody
     >(req);
     const { id } = params;
     await this.updateChargerOperationUseCase.execute(id, chargerOperation);

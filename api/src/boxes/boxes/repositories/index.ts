@@ -1,6 +1,6 @@
 import { db } from "../../../core/config/db";
 
-import { BoxesDto, BoxesResDto } from "../dto";
+import { BoxesDto, BoxesResDto, BoxesUpdateDto } from "../dto";
 
 export class BoxesRepository {
   async create(data: BoxesDto): Promise<BoxesResDto> {
@@ -29,7 +29,7 @@ export class BoxesRepository {
     return boxes;
   }
 
-  async update(id: number, data: BoxesDto): Promise<BoxesResDto> {
+  async update(id: number, data: BoxesUpdateDto): Promise<BoxesResDto> {
     const boxes = await db.boxes.update({
       where: {
         id,

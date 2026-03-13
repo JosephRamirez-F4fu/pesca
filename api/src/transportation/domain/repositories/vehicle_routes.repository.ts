@@ -1,6 +1,7 @@
 import { db } from "../../../core/config/db";
 import { VehicleRoutes } from "../entities/vehicle_routes";
 import { CreateVehicleRoutesDto } from "../dtos/vehicle_routes/create.dto";
+import { UpdateVehicleRoutesDto } from "../dtos/vehicle_routes/update.dto";
 
 export class VehicleRoutesRepository {
   async create(data: CreateVehicleRoutesDto): Promise<VehicleRoutes> {
@@ -31,7 +32,7 @@ export class VehicleRoutesRepository {
 
   async update(
     id: number,
-    data: CreateVehicleRoutesDto
+    data: UpdateVehicleRoutesDto
   ): Promise<VehicleRoutes> {
     const vehicleRoutes = await db.vehicle_routes.update({
       where: {

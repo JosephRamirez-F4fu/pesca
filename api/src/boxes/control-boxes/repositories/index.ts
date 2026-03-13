@@ -1,8 +1,12 @@
 import { db } from "../../../core/config/db";
-import { ControlBoxesDto, ControlBoxesResDto } from "../dto";
+import {
+  ControlBoxesCreateDto,
+  ControlBoxesDto,
+  ControlBoxesResDto,
+} from "../dto";
 
 export class ControlBoxesRepository {
-  async create(data: ControlBoxesDto) {
+  async create(data: ControlBoxesCreateDto) {
     const controlBoxes = await db.control_boxes.create({
       data: {
         code: data.code,

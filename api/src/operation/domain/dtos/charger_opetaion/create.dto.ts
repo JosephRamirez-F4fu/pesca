@@ -1,5 +1,8 @@
 export interface ChargerOperationCreateDto {
   id_travel: number;
+}
+
+export interface ChargerOperationUpdateDto {
   footboard: number;
   helper: number;
   grocer: number;
@@ -7,5 +10,5 @@ export interface ChargerOperationCreateDto {
   weight: number;
   charger: number;
   travel_cost: number;
-  date_canceled: string;
+  date_canceled: Date | null;
 }

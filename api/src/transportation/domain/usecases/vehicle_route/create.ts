@@ -10,15 +10,7 @@ export class CreateVehicleRouteUseCase {
     const vehicleRoute = await this.vehicleRouteRepository.create(data);
     await this.vehicleRouteDetailRepository.create({
       id_vehicle_route: vehicleRoute.id,
-      dateEnd: null,
       dateInit: vehicleRoute.createdAt,
-      taxes_in: 0,
-      taxes_out: 0,
-      destiny: null,
-      point_charge: null,
-      who_destination: null,
-      id_next_route: null,
-      changeGiven: false,
     });
     return vehicleRoute;
   }

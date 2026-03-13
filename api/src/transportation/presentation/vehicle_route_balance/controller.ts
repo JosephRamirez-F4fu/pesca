@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import { VehicleRouteBalanceRepository } from "../../domain/repositories/vehicle_route_balance.repository";
 import { getValidated } from "../../../shared/presentation/types/validated-request";
 import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
-import type { VehicleRouteBalanceBody } from "../transportation.schemas";
+import type {
+  VehicleRouteBalanceBody,
+  VehicleRouteBalanceUpdateBody,
+} from "../transportation.schemas";
 
 export class VehicleRouteBalanceController {
   private repository = new VehicleRouteBalanceRepository();
@@ -22,7 +25,7 @@ export class VehicleRouteBalanceController {
   update = async (req: Request, res: Response) => {
     const { params, body: vehicleRouteDetail } = getValidated<
       IdParams,
-      VehicleRouteBalanceBody
+      VehicleRouteBalanceUpdateBody
     >(req);
     const { id } = params;
     await this.repository.update(id, vehicleRouteDetail);

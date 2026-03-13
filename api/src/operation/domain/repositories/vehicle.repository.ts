@@ -1,6 +1,6 @@
 import { db } from "../../../core/config/db";
 import { Vehicle } from "../entities/vehicle";
-import { VehicleCreateDto } from "../dtos/vehicle/create.dto";
+import { VehicleCreateDto, VehicleUpdateDto } from "../dtos/vehicle/create.dto";
 
 export class VehicleRepository {
   async create(data: VehicleCreateDto): Promise<Vehicle> {
@@ -30,7 +30,7 @@ export class VehicleRepository {
     return vehicle;
   }
 
-  async update(id: number, data: VehicleCreateDto): Promise<void> {
+  async update(id: number, data: VehicleUpdateDto): Promise<void> {
     await db.vehicle.update({
       where: {
         id: id,

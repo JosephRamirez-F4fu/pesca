@@ -4,6 +4,11 @@ export interface ControlBoxesDto {
   concluded: boolean;
 }
 
+export interface ControlBoxesCreateDto {
+  code: string;
+  date_arrive: Date;
+}
+
 export interface ControlBoxesResDto {
   id: number;
   code: string;

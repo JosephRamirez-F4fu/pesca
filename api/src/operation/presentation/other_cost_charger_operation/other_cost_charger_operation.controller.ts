@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { getValidated } from "../../../shared/presentation/types/validated-request";
 import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
-import type { OtherCostChargerOperationBody } from "../operation.schemas";
+import type {
+  OtherCostChargerOperationBody,
+  OtherCostChargerOperationUpdateBody,
+} from "../operation.schemas";
 
 import {
   CreateOtherCostChargerOperationUseCase,
@@ -67,7 +70,7 @@ export class OtherCostChargerOperationController {
   update = async (req: Request, res: Response) => {
     const { params, body: otherCostChargerOperation } = getValidated<
       IdParams,
-      OtherCostChargerOperationBody
+      OtherCostChargerOperationUpdateBody
     >(req);
     const { id } = params;
     await this.updateOtherCostChargerOperationUseCase.execute(

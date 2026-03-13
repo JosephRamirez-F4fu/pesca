@@ -1,9 +1,12 @@
 import { db } from "./../../../core/config/db";
 
-import { VehicleRouteDetailDto } from "../dtos/vehicle_route_detail";
+import {
+  CreateVehicleRouteDetailDto,
+  UpdateVehicleRouteDetailDto,
+} from "../dtos/vehicle_route_detail";
 
 export class VehicleRouteDetailRepository {
-  async create(data: VehicleRouteDetailDto) {
+  async create(data: CreateVehicleRouteDetailDto) {
     const vehicleRouteDetail = await db.vehicle_route_detail.create({
       data: {
         id_vehicle_route: data.id_vehicle_route,
@@ -27,7 +30,7 @@ export class VehicleRouteDetailRepository {
     return vehicleRouteDetail;
   }
 
-  async update(id: number, data: VehicleRouteDetailDto) {
+  async update(id: number, data: UpdateVehicleRouteDetailDto) {
     const vehicleRouteDetail = await db.vehicle_route_detail.update({
       where: {
         id,

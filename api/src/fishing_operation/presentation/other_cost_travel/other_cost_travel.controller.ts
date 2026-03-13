@@ -9,7 +9,10 @@ import {
 import { Request, Response } from "express";
 import { getValidated } from "../../../shared/presentation/types/validated-request";
 import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
-import type { OtherCostTravelBody } from "../fishing_operation.schemas";
+import type {
+  OtherCostTravelBody,
+  OtherCostTravelUpdateBody,
+} from "../fishing_operation.schemas";
 
 export class OtherCostTravelController {
   private createOtherCostTravelUseCase = new CreateOtherCostTravelUseCase();
@@ -57,7 +60,7 @@ export class OtherCostTravelController {
   update = async (req: Request, res: Response) => {
     const { params, body: otherCostTravel } = getValidated<
       IdParams,
-      OtherCostTravelBody
+      OtherCostTravelUpdateBody
     >(req);
     const { id } = params;
     await this.updateOtherCostTravelUseCase.execute(id, otherCostTravel);

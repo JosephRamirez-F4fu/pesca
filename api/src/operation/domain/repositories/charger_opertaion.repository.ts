@@ -1,6 +1,6 @@
 import { db } from "../../../core/config/db";
 import { ChargerOperation } from "../../domain/entities/charger_operation";
-import { ChargerOperationCreateDto } from "../dtos/charger_opetaion/create.dto";
+import { ChargerOperationUpdateDto } from "../dtos/charger_opetaion/create.dto";
 
 export class ChargerOperationRepository {
   async create(id_travel: number): Promise<ChargerOperation> {
@@ -34,7 +34,7 @@ export class ChargerOperationRepository {
     return chargerOperation;
   }
 
-  async update(id: number, data: ChargerOperationCreateDto): Promise<void> {
+  async update(id: number, data: ChargerOperationUpdateDto): Promise<void> {
     await db.charger_operation.update({
       where: {
         id: id,

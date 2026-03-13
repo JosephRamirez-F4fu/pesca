@@ -5,6 +5,6 @@ export interface VehicleRouteMoney {
   givenby: string;
   type: string;
   description: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

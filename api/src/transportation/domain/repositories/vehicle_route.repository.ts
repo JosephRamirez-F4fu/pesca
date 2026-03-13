@@ -3,6 +3,7 @@ import {
   VehicleRouteWithDetailAndVehicle,
 } from "./../entities/vehicle_route";
 import { CreateVehicleRouteDto } from "./../dtos/vehicle_route/create.dto";
+import { UpdateVehicleRouteDto } from "./../dtos/vehicle_route/update.dto";
 import { db } from "../../../core/config/db";
 
 export class VehicleRouteRepository {
@@ -41,7 +42,7 @@ export class VehicleRouteRepository {
     return vehicleRoute;
   }
 
-  async update(id: number, data: CreateVehicleRouteDto): Promise<VehicleRoute> {
+  async update(id: number, data: UpdateVehicleRouteDto): Promise<VehicleRoute> {
     const vehicleRoute = await db.vehicle_route.update({
       where: {
         id,

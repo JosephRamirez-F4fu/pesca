@@ -2,6 +2,7 @@ import { ControlBoxesRepository } from "../repositories";
 import { Request, Response } from "express";
 import { getValidated } from "../../../shared/presentation/types/validated-request";
 import type {
+  ControlBoxesCreateBody,
   ControlBoxesBody,
   IdParams,
 } from "../../presentation/boxes.schemas";
@@ -12,7 +13,7 @@ export class ControlBoxesController {
   create = async (req: Request, res: Response) => {
     const { body: controlBoxes } = getValidated<
       Record<string, never>,
-      ControlBoxesBody
+      ControlBoxesCreateBody
     >(req);
     const newControlBoxes = await this.repository.create(controlBoxes);
     res.status(201).json(newControlBoxes);

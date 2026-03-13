@@ -5,6 +5,12 @@ export interface BoxesDto {
   quantity: number;
 }
 
+export interface BoxesUpdateDto {
+  color: string;
+  name: string;
+  quantity: number;
+}
+
 export interface BoxesResDto {
   id: number;
   id_control_place: number;

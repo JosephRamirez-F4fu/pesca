@@ -1,7 +1,10 @@
 import { Response, Request } from "express";
 import { getValidated } from "../../../shared/presentation/types/validated-request";
 import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
-import type { VehicleRoutesBody } from "../transportation.schemas";
+import type {
+  VehicleRoutesBody,
+  VehicleRoutesUpdateBody,
+} from "../transportation.schemas";
 
 import {
   CreateVehicleRoutesUseCase,
@@ -35,7 +38,7 @@ export class VehicleRoutesController {
   update = async (req: Request, res: Response) => {
     const { params, body: vehicleRoutes } = getValidated<
       IdParams,
-      VehicleRoutesBody
+      VehicleRoutesUpdateBody
     >(req);
     const { id } = params;
     await this.updateVehicleRoutesUseCase.execute(id, vehicleRoutes);

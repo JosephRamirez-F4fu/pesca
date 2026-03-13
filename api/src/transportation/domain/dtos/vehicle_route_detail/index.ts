@@ -1,4 +1,9 @@
-export interface VehicleRouteDetailDto {
+export interface CreateVehicleRouteDetailDto {
+  id_vehicle_route: number;
+  dateInit: Date;
+}
+
+export interface UpdateVehicleRouteDetailDto {
   id_vehicle_route: number;
   dateInit: Date;
   dateEnd: Date | null;

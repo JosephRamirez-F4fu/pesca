@@ -1,6 +1,9 @@
 import { db } from "../../../core/config/db";
 import { OtherCostChargerOperation } from "../entities/other_cost_charger_operation";
-import { OtherCostChargerOperationCreateDto } from "../dtos/other_cost_operation/create.dto";
+import {
+  OtherCostChargerOperationCreateDto,
+  OtherCostChargerOperationUpdateDto,
+} from "../dtos/other_cost_operation/create.dto";
 
 export class OtherCostChargerOperationRepository {
   async create(
@@ -35,7 +38,7 @@ export class OtherCostChargerOperationRepository {
 
   async update(
     id: number,
-    data: OtherCostChargerOperationCreateDto
+    data: OtherCostChargerOperationUpdateDto
   ): Promise<void> {
     await db.other_cost_charger_operation.update({
       where: {

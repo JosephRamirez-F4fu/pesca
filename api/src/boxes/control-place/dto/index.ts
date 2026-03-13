@@ -6,6 +6,13 @@ export interface ControlPlaceDto {
   hasLiquid: boolean;
 }
 
+export interface ControlPlaceUpdateDto {
+  name: string;
+  date_arrive: Date;
+  concluded: boolean;
+  hasLiquid: boolean;
+}
+
 export interface ControlPlaceResDto extends ControlPlaceDto {
   id: number;
 }

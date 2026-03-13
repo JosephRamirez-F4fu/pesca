@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { getValidated } from "../../../shared/presentation/types/validated-request";
 import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
-import type { TravelBody } from "../fishing_operation.schemas";
+import type {
+  TravelCreateBody,
+  TravelUpdateBody,
+} from "../fishing_operation.schemas";
 import {
   CreateTravelUseCase,
   DeleteTravelUseCase,
@@ -21,9 +24,10 @@ export class TravelController {
   private getAllByBoatIdTravelUseCase = new GetAllByBoatIdTravelUseCase();
 
   create = async (req: Request, res: Response) => {
-    const { body: travel } = getValidated<Record<string, never>, TravelBody>(
-      req
-    );
+    const { body: travel } = getValidated<
+      Record<string, never>,
+      TravelCreateBody
+    >(req);
     const newTravel = await this.createTravelUseCase.execute(travel);
     res.status(201).json(newTravel);
     return;
@@ -52,7 +56,9 @@ export class TravelController {
   };
 
   update = async (req: Request, res: Response) => {
-    const { params, body: travel } = getValidated<IdParams, TravelBody>(req);
+    const { params, body: travel } = getValidated<IdParams, TravelUpdateBody>(
+      req
+    );
     const { id } = params;
     await this.updateTravelUseCase.execute(id, travel);
     res.status(204).send();

@@ -11,7 +11,10 @@ import type {
   DestinationParams,
   IdParams,
 } from "../../../shared/presentation/schemas/common.schemas";
-import type { VehicleRouteDetailBody } from "../transportation.schemas";
+import type {
+  VehicleRouteDetailBody as VehicleRouteDetailCreateBody,
+  VehicleRouteDetailUpdateBody as VehicleRouteDetailPatchBody,
+} from "../transportation.schemas";
 
 export class VehicleRouteDetailController {
   private vehicleRouteDetailRepository = new VehicleRouteDetailRepository();
@@ -20,7 +23,7 @@ export class VehicleRouteDetailController {
   create = async (req: Request, res: Response) => {
     const { body: vehicleRouteDetail } = getValidated<
       Record<string, never>,
-      VehicleRouteDetailBody
+      VehicleRouteDetailCreateBody
     >(req);
     const newVehicleRouteDetail =
       await this.vehicleRouteDetailRepository.create(vehicleRouteDetail);
@@ -31,7 +34,7 @@ export class VehicleRouteDetailController {
   update = async (req: Request, res: Response) => {
     const { params, body: vehicleRouteDetail } = getValidated<
       IdParams,
-      VehicleRouteDetailBody
+      VehicleRouteDetailPatchBody
     >(req);
     const { id } = params;
     await this.vehicleRouteDetailRepository.update(id, vehicleRouteDetail);
@@ -81,15 +84,7 @@ export class VehicleRouteDetailController {
       const vehicleRouteDetailCreated =
         await this.vehicleRouteDetailRepository.create({
           id_vehicle_route: vehicleRouteId,
-          taxes_in: 0,
-          taxes_out: 0,
           dateInit: vehicleRoute.createdAt,
-          dateEnd: null,
-          point_charge: null,
-          who_destination: null,
-          destiny: null,
-          id_next_route: null,
-          changeGiven: false,
         });
 
       res.status(200).json(vehicleRouteDetailCreated);

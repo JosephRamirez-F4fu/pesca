@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { getValidated } from "../../../shared/presentation/types/validated-request";
 import type { IdParams } from "../../../shared/presentation/schemas/common.schemas";
-import type { VehicleBody } from "../operation.schemas";
+import type {
+  VehicleCreateBody,
+  VehicleUpdateBody,
+} from "../operation.schemas";
 
 import {
   CreateVehicleUseCase,
@@ -19,9 +22,10 @@ export class VehicleController {
   private updateVehicleUseCase = new UpdateVehicleUseCase();
 
   create = async (req: Request, res: Response) => {
-    const { body: vehicle } = getValidated<Record<string, never>, VehicleBody>(
-      req
-    );
+    const { body: vehicle } = getValidated<
+      Record<string, never>,
+      VehicleCreateBody
+    >(req);
     const newVehicle = await this.createVehicleUseCase.execute(vehicle);
     res.status(201).json(newVehicle);
     return;
@@ -50,7 +54,9 @@ export class VehicleController {
   };
 
   update = async (req: Request, res: Response) => {
-    const { params, body: vehicle } = getValidated<IdParams, VehicleBody>(req);
+    const { params, body: vehicle } = getValidated<IdParams, VehicleUpdateBody>(
+      req
+    );
     const { id } = params;
     await this.updateVehicleUseCase.execute(id, vehicle);
     res.status(204).send();

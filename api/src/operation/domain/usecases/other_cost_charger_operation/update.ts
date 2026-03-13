@@ -1,10 +1,10 @@
 import { OtherCostChargerOperationRepository } from "../../repositories/other_cost_charger_operation.repository";
-import { OtherCostChargerOperationCreateDto } from "./../../dtos/other_cost_operation/create.dto";
+import { OtherCostChargerOperationUpdateDto } from "./../../dtos/other_cost_operation/create.dto";
 
 export class UpdateOtherCostChargerOperationUseCase {
   private otherCostChargerOperationRepository =
     new OtherCostChargerOperationRepository();
-  execute(id: number, data: OtherCostChargerOperationCreateDto) {
+  execute(id: number, data: OtherCostChargerOperationUpdateDto) {
     return this.otherCostChargerOperationRepository.update(id, data);
   }
 }
