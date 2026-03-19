@@ -210,60 +210,14 @@ model vehicle_routes_oil_use {
 }
 
 model user {
-  id           Int            @id @default(autoincrement())
-  name         String
-  code         String         @unique
-  id_role      Int
-  password     String
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  role         role           @relation(fields: [id_role], references: [id])
-  notification notification[]
-}
-
-model control_boxes {
-  id            Int             @id @default(autoincrement())
-  code          String
-  date_arrive   DateTime
-  concluded     Boolean         @default(false)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  control_place control_place[]
-}
-
-model control_place {
-  id               Int           @id @default(autoincrement())
-  id_control_boxes Int
-  name             String
-  date_arrive      DateTime
-  concluded        Boolean       @default(false)
-  hasLiquid        Boolean       @default(false)
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-  control_boxes    control_boxes @relation(fields: [id_control_boxes], references: [id], onDelete: Cascade)
-  boxes            boxes[]
-}
-
-model boxes {
-  id               Int            @id @default(autoincrement())
-  id_control_place Int
-  color            String
-  name             String
-  quantity         Int
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  boxes_return     boxes_return[]
-  control_place    control_place  @relation(fields: [id_control_place], references: [id], onDelete: Cascade)
-}
-
-model boxes_return {
   id        Int      @id @default(autoincrement())
-  id_boxes  Int
-  date      DateTime
-  quantity  Int
+  name      String
+  code      String   @unique
+  id_role   Int
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  boxes     boxes    @relation(fields: [id_boxes], references: [id], onDelete: Cascade)
+  role      role     @relation(fields: [id_role], references: [id])
 }
 
 model role {
@@ -272,73 +226,4 @@ model role {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      user[]
-}
-
-model client {
-  id        Int       @id @default(autoincrement())
-  name      String
-  phone     String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  state     String
-  loan      loan[]
-  payment   payment[]
-}
-
-model loan {
-  id                  Int           @id @default(autoincrement())
-  id_client           Int
-  id_charge_operation Int
-  mount               Float
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @updatedAt
-  client              client        @relation(fields: [id_client], references: [id])
-  loan_detail         loan_detail[]
-  id_person           Int
-  person              person        @relation(fields: [id_person], references: [id])
-}
-
-model loan_detail {
-  id        Int      @id @default(autoincrement())
-  id_loan   Int
-  mount     Float
-  fish      String
-  weight    Float
-  price     Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  loan      loan     @relation(fields: [id_loan], references: [id])
-}
-
-model payment {
-  id        Int      @id @default(autoincrement())
-  id_client Int
-  amount    Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  client    client   @relation(fields: [id_client], references: [id])
-  type      String
-  id_person Int
-  person    person   @relation(fields: [id_person], references: [id])
-}
-
-model person {
-  id        Int       @id @default(autoincrement())
-  name      String
-  phone     String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  loan      loan[]
-  payment   payment[]
-}
-
-model notification {
-  id        Int      @id @default(autoincrement())
-  message   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  date      DateTime
-  done      Boolean  @default(false)
-  id_user   Int
-  user      user     @relation(fields: [id_user], references: [id], onDelete: Cascade)
 }

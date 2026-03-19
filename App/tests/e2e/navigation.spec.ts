@@ -4,16 +4,14 @@ const USER_CODE = "ANA";
 const USER_PASSWORD = "936135686";
 const API_URL = process.env.PLAYWRIGHT_API_URL ?? "http://localhost:3000";
 
-test("nested navigation works across pesca, cajas and transporte", async ({
+test("nested navigation works across pesca and transporte", async ({
   page,
   baseURL,
 }) => {
   const runId = Date.now().toString().slice(-6);
-  const boxCode = `E2E-${runId}`;
   const vehicleCode = `E2E-${runId}`;
   const routeDate = new Date().toISOString().slice(0, 10);
   const createdIds = {
-    boxId: null as number | null,
     vehicleId: null as number | null,
     routeId: null as number | null,
   };
@@ -23,8 +21,6 @@ test("nested navigation works across pesca, cajas and transporte", async ({
 
   try {
     await verifyFishingFlow(page);
-    createdIds.boxId = await verifyBoxesFlow(page, boxCode);
-
     const transportationIds = await verifyTransportationFlow(
       page,
       vehicleCode,
@@ -35,7 +31,6 @@ test("nested navigation works across pesca, cajas and transporte", async ({
   } finally {
     await cleanupRoute(api, createdIds.routeId);
     await cleanupVehicle(api, createdIds.vehicleId);
-    await cleanupBox(api, createdIds.boxId);
     await api.dispose();
   }
 });
@@ -92,39 +87,6 @@ const verifyFishingFlow = async (page: import("@playwright/test").Page) => {
   await page.getByRole("link", { name: /^Inicio$/i }).click();
   await page.waitForURL("**/inicio");
   await expect(page.getByText(/Inicio operativo/i).first()).toBeVisible();
-};
-
-const verifyBoxesFlow = async (
-  page: import("@playwright/test").Page,
-  boxCode: string
-) => {
-  await goHome(page);
-  await page.getByRole("link", { name: /Control Cajas/i }).click();
-  await page.waitForURL("**/cajas");
-  await expect(page.getByText(/Control de Cajas/i).first()).toBeVisible();
-
-  const today = new Date().toISOString().slice(0, 10);
-  await page.getByLabel("Código").fill(boxCode);
-  await page.getByLabel("Fecha de llegada").fill(today);
-  await page.getByRole("button", { name: /^Crear$/i }).click();
-
-  const boxRow = page.locator("tbody tr", { hasText: boxCode }).first();
-  await expect(boxRow).toBeVisible();
-  await boxRow.getByRole("button", { name: /^Ver$/i }).click();
-  await page.waitForURL(/\/cajas\/control\/\d+$/);
-  const boxId = extractLastPathId(page.url());
-
-  await page.getByRole("link", { name: /^Regresar$/i }).click();
-  await page.waitForURL("**/cajas");
-  await expect(page.getByText(/Control de Cajas/i).first()).toBeVisible();
-
-  await boxRow.getByRole("button", { name: /^Ver$/i }).click();
-  await page.waitForURL(/\/cajas\/control\/\d+$/);
-  await page.getByRole("link", { name: /^Inicio$/i }).click();
-  await page.waitForURL("**/inicio");
-  await expect(page.getByText(/Inicio operativo/i).first()).toBeVisible();
-
-  return boxId;
 };
 
 const verifyTransportationFlow = async (
@@ -194,14 +156,6 @@ const findVehicleId = async (
   } finally {
     await api.dispose();
   }
-};
-
-const cleanupBox = async (
-  api: import("@playwright/test").APIRequestContext,
-  boxId: number | null
-) => {
-  if (!boxId) return;
-  await api.delete(`/boxes/control-boxes/${boxId}`);
 };
 
 const cleanupVehicle = async (

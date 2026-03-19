@@ -112,7 +112,6 @@ Antes de cerrar un módulo, verificar:
 - `transportation/vehicle_route` y `vehicle_routes`: el contrato exponía campos que Prisma no tenía.
 - `operation/charger_operation`: `create` solo usaba `id_travel`, pero el schema exigía payload completo.
 - `operation/other_cost_charger_operation`: el body aceptaba `id_person` sin persistencia real.
-- `boxes/boxes` y `boxes/control_place`: `update` heredaba FKs de `create` que el repositorio no modificaba.
 
 ## Excepción permitida
 
@@ -127,4 +126,4 @@ Esa decisión debe ser explícita y verificable contra:
 
 ## Documento relacionado
 
-- [Alineación funcional y técnica del módulo de ventas operativo](/Users/Joseph/Desktop/DEV/PESCA/docs/specs/ventas-operacion-alineacion.md)
+- [Retiro de modulos legacy de cajas y ventas](/Users/Joseph/Desktop/DEV/PESCA/docs/specs/retiro-cajas-ventas-legacy.md)

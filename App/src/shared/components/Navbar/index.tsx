@@ -193,16 +193,8 @@ const getCurrentSection = (pathname: string) => {
     return "Módulo pesca";
   }
 
-  if (pathname.startsWith(APP_ROUTES.boxes)) {
-    return "Control de cajas";
-  }
-
   if (pathname.startsWith(APP_ROUTES.transportation)) {
     return "Módulo transporte";
-  }
-
-  if (pathname.startsWith(APP_ROUTES.sales)) {
-    return "Módulo ventas";
   }
 
   return "Centro de operaciones";
@@ -221,16 +213,8 @@ const getBackTarget = (pathname: string) => {
     return APP_ROUTES.fishing;
   }
 
-  if (pathname.startsWith(`${APP_ROUTES.boxes}/control/`)) {
-    return APP_ROUTES.boxes;
-  }
-
   if (pathname.startsWith(`${APP_ROUTES.transportationControl}/`)) {
     return APP_ROUTES.transportationControl;
-  }
-
-  if (pathname.startsWith(`${APP_ROUTES.boxes}/`)) {
-    return APP_ROUTES.boxes;
   }
 
   if (pathname.startsWith(APP_ROUTES.transportationRoutes)) {
@@ -243,10 +227,6 @@ const getBackTarget = (pathname: string) => {
 
   if (pathname.startsWith(APP_ROUTES.transportationControl)) {
     return APP_ROUTES.transportation;
-  }
-
-  if (pathname.startsWith(`${APP_ROUTES.sales}/`)) {
-    return APP_ROUTES.home;
   }
 
   return null;

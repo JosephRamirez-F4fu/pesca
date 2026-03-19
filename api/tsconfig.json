@@ -13,7 +13,6 @@
       "@auth/*": ["./src/auth/*"],
       "@fishing_operation/*": ["./src/fishing_operation/*"],
       "@operations/*": ["./src/operation/*"],
-      "@sales/*": ["./src/sales/*"],
       "@transportation/*": ["./src/transportation/*"],
       "@notification/*": ["./src/notifications/*"]
     }

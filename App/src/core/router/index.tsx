@@ -17,11 +17,6 @@ import {
   TravelPage,
 } from "../../fishing/router";
 import {
-  BoxesModuleLayout,
-  BoxControlPage,
-  BoxControlPageDetail,
-} from "../../boxes/router";
-import {
   ControlTransport,
   ControlTransportDetail,
   MainTransportation,
@@ -79,15 +74,6 @@ export const AppRouter = () => {
             />
           </Route>
 
-          <Route path="cajas" element={<BoxesModuleLayout />}>
-            <Route index element={<BoxControlPage />} />
-            <Route path="control/:id" element={<BoxControlPageDetail />} />
-            <Route
-              path="*"
-              element={<Navigate to={APP_ROUTES.boxes} replace />}
-            />
-          </Route>
-
           <Route path="transporte" element={<Outlet />}>
             <Route index element={<MainTransportation />} />
             <Route path="rutas" element={<RoutesShow />} />
@@ -106,10 +92,6 @@ export const AppRouter = () => {
             />
           </Route>
 
-          <Route
-            path="ventas/*"
-            element={<PendingPage title="Ventas" />}
-          />
           <Route
             path="reportes/*"
             element={<PendingPage title="Reportes" />}

@@ -2,9 +2,7 @@ export const APP_ROUTES = {
   login: "/",
   home: "/inicio",
   fishing: "/pesca",
-  boxes: "/cajas",
   transportation: "/transporte",
-  sales: "/ventas",
   reports: "/reportes",
   expenseBalance: "/balanza-gastos",
   transportationRoutes: "/transporte/rutas",
@@ -12,7 +10,6 @@ export const APP_ROUTES = {
   transportationControl: "/transporte/control",
   transportationOilDestiny: "/transporte/control/petroleo-destino",
   fishingTravelDetail: (id: string | number = ":id") => `/pesca/viaje/${id}`,
-  boxesControlDetail: (id: string | number = ":id") => `/cajas/control/${id}`,
   transportationControlDetail: (id: string | number = ":id") =>
     `/transporte/control/${id}`,
 } as const;
