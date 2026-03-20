@@ -1,23 +1,70 @@
-version: '3.8'
-
 services:
-  postgres:
-    image: postgres:14
-    container_name: dbPesca
+  db:
+    image: postgres:16-alpine
+    container_name: pesca-db
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: postgre      
-      POSTGRES_PASSWORD: postgre123 
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: pesca
     ports:
-      - "5432:5432"  
+      - "5432:5432"
     volumes:
-      - ./data:/var/lib/postgresql/data
-    networks:
-      - app_network
+      - ./postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pesca"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
-networks:
-  app_network:
-    driver: bridge
+  api:
+    build:
+      context: ./api
+    image: pesca-api-dev
+    container_name: pesca-api
+    restart: unless-stopped
+    init: true
+    working_dir: /app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/pesca
+      SECRET_JWT: M2F7fCXeGxeqjq8F91XD5oXeM8VJ4cXRgfB0labHXrw7DhHvwW
+      PORT: 3000
+      NODE_ENV: development
+      RUN_DB_SEED: "false"
+      RUN_DB_MIGRATIONS: "true"
+      CHOKIDAR_USEPOLLING: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api:/app
+      - api_node_modules:/app/node_modules
+    command: ["/usr/local/bin/dev-entrypoint.sh"]
+
+  app:
+    image: node:22-alpine
+    container_name: pesca-app
+    restart: unless-stopped
+    working_dir: /app
+    depends_on:
+      - api
+    environment:
+      VITE_BACKEND_URL: http://host.docker.internal:3000
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./App:/app
+      - app_node_modules:/app/node_modules
+    command: >
+      sh -c "npm install &&
+      npm run dev -- --host 0.0.0.0 --port 5173"
 
 volumes:
-  postgres_data:
+  api_node_modules:
+  app_node_modules:

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "fishing" ADD COLUMN     "weight" DOUBLE PRECISION NOT NULL DEFAULT 24;
