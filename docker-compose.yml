@@ -21,6 +21,7 @@ services:
   api:
     build:
       context: ./api
+      dockerfile: Dockerfile.dev
     image: pesca-api-dev
     container_name: pesca-api
     restart: unless-stopped
