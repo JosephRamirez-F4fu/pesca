@@ -1,5 +1,4 @@
-import { Prisma } from "@prisma/client";
-import { db } from "../../../core/config/db";
+import { Prisma, db } from "../../../core/config/db";
 import {
   badRequest,
   notFound,

@@ -1,6 +1,6 @@
 import express from "express";
 import type { ErrorRequestHandler } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "./core/config/db";
 import { Routes } from "./routes";
 import cors from "cors";
 import {

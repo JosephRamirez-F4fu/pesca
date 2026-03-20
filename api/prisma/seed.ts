@@ -1,9 +1,19 @@
-require("dotenv").config();
+import "dotenv/config";
+import bcrypt from "bcryptjs";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "../src/generated/prisma/client";
 
-const { PrismaClient } = require("@prisma/client");
-const bcrypt = require("bcryptjs");
+const databaseUrl = process.env.DATABASE_URL;
 
-const prisma = new PrismaClient();
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL is required");
+}
+
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({
+    connectionString: databaseUrl,
+  }),
+});
 
 async function main() {
   await prisma.role.upsert({

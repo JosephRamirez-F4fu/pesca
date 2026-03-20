@@ -1,6 +1,29 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Prisma, PrismaClient } from "../../generated/prisma/client";
 
-export const db = new PrismaClient();
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL is required");
+}
+
+const globalForDb = globalThis as typeof globalThis & {
+  db?: PrismaClient;
+};
+
+export const db =
+  globalForDb.db ??
+  new PrismaClient({
+    adapter: new PrismaPg({
+      connectionString: databaseUrl,
+    }),
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForDb.db = db;
+}
+
+export { Prisma, PrismaClient };
 
 const initalize_roles = async () => {
   const roles = ["USER", "ADMIN"];
