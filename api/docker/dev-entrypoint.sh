@@ -1,9 +1,9 @@
 #!/bin/sh
 set -eu
 
-if [ ! -x node_modules/.bin/tsx ]; then
+if ! npx --no-install tsx --version >/dev/null 2>&1; then
   echo "Installing API dependencies into the Docker volume..."
-  npm ci
+  npm ci --include=dev
 fi
 
 if [ ! -f node_modules/.prisma/client/default.js ] || [ prisma/schema.prisma -nt node_modules/.prisma/client/default.js ]; then

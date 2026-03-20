@@ -1,0 +1,2 @@
+ALTER TABLE "sale_balance"
+ADD COLUMN "empty_boxes" INTEGER NOT NULL DEFAULT 0;

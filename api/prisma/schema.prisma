@@ -227,3 +227,69 @@ model role {
   updatedAt DateTime @updatedAt
   user      user[]
 }
+
+model sale_driver {
+  id        Int            @id @default(autoincrement())
+  name      String         @unique
+  phone     String?
+  is_active Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  balances  sale_balance[]
+}
+
+model sale_vehicle {
+  id          Int            @id @default(autoincrement())
+  code        String         @unique
+  plate       String         @unique
+  description String?
+  is_active   Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  balances    sale_balance[]
+}
+
+model product {
+  id        Int                   @id @default(autoincrement())
+  name      String                @unique
+  is_active Boolean               @default(true)
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  details   sale_balance_detail[]
+}
+
+model sale_balance {
+  id                     Int                   @id @default(autoincrement())
+  sale_date              DateTime
+  id_sale_driver         Int
+  id_sale_vehicle        Int
+  boxes_arrived          Int                   @default(0)
+  boxes_sold             Int                   @default(0)
+  empty_boxes            Int                   @default(0)
+  boxes_remaining        Int                   @default(0)
+  total_weight           Float                 @default(0)
+  gross_total            Float                 @default(0)
+  average_weight_per_box Float                 @default(0)
+  notes                  String?
+  status                 String                @default("draft")
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  driver                 sale_driver           @relation(fields: [id_sale_driver], references: [id])
+  vehicle                sale_vehicle          @relation(fields: [id_sale_vehicle], references: [id])
+  details                sale_balance_detail[]
+}
+
+model sale_balance_detail {
+  id              Int          @id @default(autoincrement())
+  id_sale_balance Int
+  id_product      Int
+  variation       String?
+  boxes_sold      Int          @default(0)
+  weight_sold     Float        @default(0)
+  unit_price      Float        @default(0)
+  line_total      Float        @default(0)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  balance         sale_balance @relation(fields: [id_sale_balance], references: [id], onDelete: Cascade)
+  product         product      @relation(fields: [id_product], references: [id])
+}

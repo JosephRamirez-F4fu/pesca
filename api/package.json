@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "dev": "tsx watch src/app.ts",
+    "dev": "npx --no-install tsx watch src/app.ts",
     "prisma": "npx prisma generate",
     "migrate": "prisma migrate deploy",
     "seed": "node prisma/seed.js",

@@ -6,6 +6,7 @@ export interface Item {
 
 import PhishingIcon from "@mui/icons-material/Phishing";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 
 export const navbarItems: Item[] = [
   {
@@ -17,5 +18,10 @@ export const navbarItems: Item[] = [
     title: "Transporte",
     url: "/transporte",
     icon: <LocalShippingIcon />,
+  },
+  {
+    title: "Ventas",
+    url: "/ventas",
+    icon: <ReceiptLongIcon />,
   },
 ];

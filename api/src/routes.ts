@@ -4,6 +4,7 @@ import { jwtMiddleware } from "./shared/presentation/middlewares/jwt.midddleware
 import { TransportationRoutes } from "./transportation/presentation/transportation.routes";
 import { OperationRoutes } from "./operation/presentation/operation.routes";
 import { FishingOperationRoutes } from "./fishing_operation/presentation/fishing.routes";
+import { SalesRoutes } from "./sales/presentation/sales.routes";
 export class Routes {
   private routerPublic: Router;
   private routerPrivate: Router;
@@ -11,6 +12,7 @@ export class Routes {
   private FishingRoutes = new FishingOperationRoutes();
   private TransportationRoutes = new TransportationRoutes();
   private OperationRoutes = new OperationRoutes();
+  private SalesRoutes = new SalesRoutes();
   constructor() {
     this.routerPrivate = Router();
     this.routerPublic = Router();
@@ -27,6 +29,7 @@ export class Routes {
       this.TransportationRoutes.getRoutes()
     );
     this.routerPrivate.use("/operation", this.OperationRoutes.getRoutes());
+    this.routerPrivate.use("/sales", this.SalesRoutes.getRoutes());
     return this.routerPrivate;
   }
 }

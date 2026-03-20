@@ -22,6 +22,11 @@ const getHeaderValue = (value?: string | string[]) => {
   return value ?? null;
 };
 
+const attachSessionToBody = (req: Parameters<RequestHandler>[0], user: unknown) => {
+  req.body = req.body && typeof req.body === "object" ? req.body : {};
+  req.body.session = user;
+};
+
 export const jwtMiddleware: RequestHandler = async (req, res, next) => {
   const sendUnauthorized = (error: string) => {
     res.status(401).json({ error });
@@ -32,7 +37,7 @@ export const jwtMiddleware: RequestHandler = async (req, res, next) => {
   if (accessToken) {
     const { isValid, user } = await validateTokenUseCase.execute(accessToken);
     if (isValid && user) {
-      req.body.session = user;
+      attachSessionToBody(req, user);
       next();
       return;
     }
@@ -53,6 +58,6 @@ export const jwtMiddleware: RequestHandler = async (req, res, next) => {
   const { token: newAccessToken } = await sessionUseCase.accessToken(user);
   res.setHeader("x-access-token", newAccessToken);
 
-  req.body.session = user;
+  attachSessionToBody(req, user);
   next();
 };

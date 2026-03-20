@@ -197,6 +197,10 @@ const getCurrentSection = (pathname: string) => {
     return "Módulo transporte";
   }
 
+  if (pathname.startsWith(APP_ROUTES.sales)) {
+    return "Módulo ventas";
+  }
+
   return "Centro de operaciones";
 };
 
@@ -227,6 +231,30 @@ const getBackTarget = (pathname: string) => {
 
   if (pathname.startsWith(APP_ROUTES.transportationControl)) {
     return APP_ROUTES.transportation;
+  }
+
+  if (pathname === APP_ROUTES.sales) {
+    return APP_ROUTES.home;
+  }
+
+  if (pathname.startsWith(`${APP_ROUTES.salesBalances}/`)) {
+    return APP_ROUTES.salesBalances;
+  }
+
+  if (pathname.startsWith(APP_ROUTES.salesDrivers)) {
+    return APP_ROUTES.sales;
+  }
+
+  if (pathname.startsWith(APP_ROUTES.salesVehicles)) {
+    return APP_ROUTES.sales;
+  }
+
+  if (pathname.startsWith(APP_ROUTES.salesProducts)) {
+    return APP_ROUTES.sales;
+  }
+
+  if (pathname.startsWith(APP_ROUTES.salesBalances)) {
+    return APP_ROUTES.sales;
   }
 
   return null;

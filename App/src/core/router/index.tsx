@@ -25,6 +25,14 @@ import {
   TransportistShow,
   VehicleUseOilDestiny,
 } from "../../transportation/router";
+import {
+  SalesBalanceDetailPage,
+  SalesBalancesPage,
+  SalesDriversPage,
+  SalesMain,
+  SalesProductsPage,
+  SalesVehiclesPage,
+} from "../../sales/router";
 
 const Login = lazy(() =>
   import("../../auth/pages/login").then((module) => ({
@@ -90,6 +98,16 @@ export const AppRouter = () => {
               path="*"
               element={<Navigate to={APP_ROUTES.transportation} replace />}
             />
+          </Route>
+
+          <Route path="ventas" element={<Outlet />}>
+            <Route index element={<SalesMain />} />
+            <Route path="choferes" element={<SalesDriversPage />} />
+            <Route path="vehiculos" element={<SalesVehiclesPage />} />
+            <Route path="productos" element={<SalesProductsPage />} />
+            <Route path="cuadres" element={<SalesBalancesPage />} />
+            <Route path="cuadres/:id" element={<SalesBalanceDetailPage />} />
+            <Route path="*" element={<Navigate to={APP_ROUTES.sales} replace />} />
           </Route>
 
           <Route
